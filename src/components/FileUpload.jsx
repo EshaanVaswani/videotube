@@ -1,21 +1,21 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 
-const FileUpload = ({
+export const FileUpload = ({
    fieldChange,
    mediaUrl,
    placeholder,
    acceptedTypes = "*/*",
    icon = "/file-upload.svg",
 }) => {
-   const [file, setFile] = useState(null);
-   const [fileUrl, setFileUrl] = useState(mediaUrl);
+   const fileRef = useRef(null);
+   const fileUrlRef = useRef(mediaUrl);
 
    const onDrop = useCallback(
       (acceptedFiles) => {
-         setFile(acceptedFiles);
+         fileRef.current = acceptedFiles;
          fieldChange(acceptedFiles);
-         setFileUrl(URL.createObjectURL(acceptedFiles[0]));
+         fileUrlRef.current = URL.createObjectURL(acceptedFiles[0]);
       },
       [fieldChange]
    );
@@ -31,23 +31,23 @@ const FileUpload = ({
          className={"flex flex-col rounded-xl cursor-pointer"}
       >
          <input {...getInputProps()} className="cursor-pointer" />
-         {fileUrl ? (
+         {fileUrlRef.current ? (
             <div className="border border-muted-foreground rounded-lg">
                {acceptedTypes.includes("image") ? (
                   <img
-                     src={fileUrl}
+                     src={fileUrlRef.current}
                      alt="file"
                      className="h-32 w-32 rounded-lg object-cover"
                   />
                ) : acceptedTypes.includes("video") ? (
                   <video
-                     src={fileUrl}
+                     src={fileUrlRef.current}
                      controls
                      className="h-32 w-32 rounded-lg"
                   />
                ) : (
                   <p className="text-center text-muted-foreground">
-                     {file[0]?.name}
+                     {fileRef.current?.[0]?.name}
                   </p>
                )}
             </div>
@@ -66,5 +66,3 @@ const FileUpload = ({
       </div>
    );
 };
-
-export default FileUpload;

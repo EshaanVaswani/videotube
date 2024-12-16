@@ -1,6 +1,8 @@
-import React from "react";
 import { z } from "zod";
+import { toast } from "sonner";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -21,18 +23,27 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import FileUpload from "@/components/FileUpload";
+import { FileUpload } from "@/components/FileUpload";
+
+import { userExist } from "@/store/reducers/authReducer";
+import { useRegisterUserMutation } from "@/store/api/authApi";
 
 const RegisterSchema = z.object({
    fullName: z.string().min(1, "Full Name is required"),
    username: z.string().min(1, "Username is required"),
    email: z.string().email("Email is required"),
    password: z.string().min(8, "Password should be at least 8 characters long"),
-   avatar: z.instanceof(File, "Avatar is required"),
-   coverImage: z.instanceof(File).optional(),
+   avatar: z.array(z.instanceof(File, "Avatar is required")),
+   coverImage: z.array(z.instanceof(File).optional()),
 });
 
 const RegisterForm = () => {
+   const [isLoading, setIsLoading] = useState(false);
+
+   const dispatch = useDispatch();
+
+   const [register] = useRegisterUserMutation();
+
    const form = useForm({
       resolver: zodResolver(RegisterSchema),
       defaultValues: {
@@ -45,9 +56,44 @@ const RegisterForm = () => {
       },
    });
 
-   function onSubmit(values) {
-      console.log(values);
-   }
+   const onSubmit = async (values) => {
+      const formData = new FormData();
+
+      formData.append("fullName", values.fullName);
+      formData.append("username", values.username);
+      formData.append("email", values.email);
+      formData.append("password", values.password);
+
+      if (values.avatar) {
+         formData.append("avatar", values.avatar[0]);
+      }
+
+      if (values.coverImage) {
+         formData.append("coverImage", values.coverImage[0]);
+      }
+
+      setIsLoading(true);
+      try {
+         const res = await register(formData).unwrap();
+
+         if (res.success) {
+            dispatch(userExist(res.data.user));
+            toast.success(res.message);
+         }
+      } catch (error) {
+         let errorMessage = "Something went wrong";
+         if (error?.data) {
+            const match = error.data.match(/Error: (.+?)<\/pre>/);
+
+            if (match && match[1]) {
+               errorMessage = match[1];
+            }
+         }
+         toast.error(errorMessage);
+      } finally {
+         setIsLoading(false);
+      }
+   };
 
    return (
       <Card className="">
@@ -76,8 +122,11 @@ const RegisterForm = () => {
                                     name="avatar"
                                     placeholder="Upload Avatar"
                                     acceptedTypes="image/*"
-                                    fieldChange={(file) =>
-                                       form.setValue("avatar", file[0])
+                                    fieldChange={(files) =>
+                                       form.setValue(
+                                          "avatar",
+                                          Array.from(files)
+                                       )
                                     }
                                  />
                               </FormControl>
@@ -96,9 +145,13 @@ const RegisterForm = () => {
                                     name="coverImage"
                                     placeholder="Upload CoverImage"
                                     acceptedTypes="image/*"
-                                    fieldChange={(file) =>
-                                       form.setValue("coverImage", file[0])
-                                    }
+                                    fieldChange={(files) => {
+                                       console.log(files);
+                                       form.setValue(
+                                          "coverImage",
+                                          Array.from(files)
+                                       );
+                                    }}
                                  />
                               </FormControl>
                               <FormMessage />
@@ -177,8 +230,8 @@ const RegisterForm = () => {
                         )}
                      />
                   </div>
-                  <Button type="submit" className="w-full">
-                     Register
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                     {isLoading ? "Registering..." : "Register"}
                   </Button>
                </form>
             </Form>
