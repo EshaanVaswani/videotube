@@ -50,7 +50,7 @@ export const UserButton = () => {
    return (
       <DropdownMenu modal={false}>
          <DropdownMenuTrigger className="outline-none relative">
-            <Avatar className="rounded-full size-10 hover:opacity-75 transition">
+            <Avatar className="rounded-full size-8 hover:opacity-75 transition">
                <AvatarImage
                   className="rounded-md"
                   alt={username}

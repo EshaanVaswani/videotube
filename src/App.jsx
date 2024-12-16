@@ -2,13 +2,11 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import AuthLayout from "./layouts/AuthLayout";
+import AuthLayout from "./components/layouts/AuthLayout";
+import HomeLayout from "./components/layouts/HomeLayout";
 
-import Home from "./pages/Home";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
-
-import { ModeToggle } from "./components/mode-toggle";
 
 import { userExist, userNotExist } from "./store/reducers/authReducer";
 
@@ -37,9 +35,6 @@ function App() {
 
    return (
       <>
-         <div className="absolute right-5 top-5">
-            <ModeToggle />
-         </div>
          <Routes>
             {/* {AUTH} */}
             <Route path="/auth" element={<AuthLayout />}>
@@ -48,14 +43,7 @@ function App() {
             </Route>
 
             {/* PROTECTED */}
-            <Route
-               path="/"
-               element={
-                  <ProtectedRoute>
-                     <Home />
-                  </ProtectedRoute>
-               }
-            />
+            <Route path="/" element={<HomeLayout />}></Route>
          </Routes>
       </>
    );
