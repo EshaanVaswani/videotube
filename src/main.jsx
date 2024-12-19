@@ -6,8 +6,10 @@ import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import store from "./store/store.js";
 import App from "./App.jsx";
-import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
+
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { ModalProvider } from "@/components/providers/ModalProvider";
 
 createRoot(document.getElementById("root")).render(
    <StrictMode>
@@ -15,6 +17,7 @@ createRoot(document.getElementById("root")).render(
          <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
             <BrowserRouter>
                <Toaster />
+               <ModalProvider />
                <App />
             </BrowserRouter>
          </ThemeProvider>

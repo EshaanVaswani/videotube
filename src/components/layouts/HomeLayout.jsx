@@ -15,8 +15,9 @@ const HomeLayout = () => {
          <Sidebar />
          <main
             className={cn(
-               "pt-16 pb-16 md:pb-0 transition-[padding] duration-300",
-               isOpen ? "md:pl-64" : "md:pl-[72px]"
+               "pt-16 pb-16 transition-[padding] duration-300",
+               isOpen ? "md:pl-64" : "md:pl-[72px]",
+               "min-h-[calc(100vh-64px-64px)]"
             )}
          >
             <Outlet />

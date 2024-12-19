@@ -7,6 +7,7 @@ export const FileUpload = ({
    placeholder,
    acceptedTypes = "*/*",
    icon = "/file-upload.svg",
+   containerClassName = "h-36 w-36", // Default size
 }) => {
    const fileRef = useRef(null);
    const fileUrlRef = useRef(mediaUrl);
@@ -28,39 +29,39 @@ export const FileUpload = ({
    return (
       <div
          {...getRootProps()}
-         className={"flex flex-col rounded-xl cursor-pointer"}
+         className={`flex flex-col justify-center items-center rounded-xl cursor-pointer ${containerClassName}`}
       >
          <input {...getInputProps()} className="cursor-pointer" />
          {fileUrlRef.current ? (
-            <div className="border border-muted-foreground rounded-lg">
+            <div
+               className={`border border-muted-foreground rounded-lg overflow-hidden ${containerClassName}`}
+            >
                {acceptedTypes.includes("image") ? (
                   <img
                      src={fileUrlRef.current}
                      alt="file"
-                     className="h-32 w-32 rounded-lg object-cover"
+                     className="w-full h-full object-cover"
                   />
                ) : acceptedTypes.includes("video") ? (
                   <video
                      src={fileUrlRef.current}
                      controls
-                     className="h-32 w-32 rounded-lg"
+                     className="w-full h-full object-cover"
                   />
                ) : (
-                  <p className="text-center text-muted-foreground">
+                  <p className="text-center text-muted-foreground p-2 text-xs">
                      {fileRef.current?.[0]?.name}
                   </p>
                )}
             </div>
          ) : (
-            <div className="p-5 border border-muted-foreground rounded-lg text-center">
-               <img
-                  src={icon}
-                  alt="file-upload"
-                  width={60}
-                  height={60}
-                  className="m-auto"
-               />
-               <p className="text-xs text-muted-foreground">{placeholder}</p>
+            <div
+               className={`p-5 border border-muted-foreground rounded-lg text-center flex flex-col justify-center items-center ${containerClassName}`}
+            >
+               <img src={icon} alt="file-upload" className="m-auto h-16 w-16" />
+               <p className="text-xs text-muted-foreground mt-2">
+                  {placeholder}
+               </p>
             </div>
          )}
       </div>

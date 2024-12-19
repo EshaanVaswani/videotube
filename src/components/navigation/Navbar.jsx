@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import { UserButton } from "../UserButton";
 import { ModeToggle } from "../ModeToggle";
 
+import { open } from "@/store/reducers/videoModalReducer";
 import { toggle } from "@/store/reducers/sidebarReducer";
 
 export const Navbar = () => {
@@ -38,6 +39,7 @@ export const Navbar = () => {
                         variant="ghost"
                         size="icon"
                         className="hidden sm:inline-flex"
+                        onClick={() => dispatch(open())}
                      >
                         <Video className="size-7" />
                      </Button>
@@ -48,7 +50,7 @@ export const Navbar = () => {
                      >
                         <Bell className="size-7" />
                      </Button>
-                     <Button variant="ghost" size="icon">
+                     <Button variant="ghost" size="icon" asChild>
                         <UserButton />
                      </Button>
                   </>

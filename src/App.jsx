@@ -8,6 +8,9 @@ import HomeLayout from "./components/layouts/HomeLayout";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 
+import Home from "./pages/home";
+import Watch from "./pages/watch";
+
 import { userExist, userNotExist } from "./store/reducers/authReducer";
 
 const ProtectedRoute = ({ children }) => {
@@ -36,14 +39,16 @@ function App() {
    return (
       <>
          <Routes>
-            {/* {AUTH} */}
             <Route path="/auth" element={<AuthLayout />}>
                <Route path="login" element={<Login />} />
                <Route path="register" element={<Register />} />
             </Route>
 
-            {/* PROTECTED */}
-            <Route path="/" element={<HomeLayout />}></Route>
+            <Route path="/" element={<HomeLayout />}>
+               <Route path="" element={<Home />} />
+            </Route>
+
+            <Route path="watch/:videoId" element={<Watch />} />
          </Routes>
       </>
    );
