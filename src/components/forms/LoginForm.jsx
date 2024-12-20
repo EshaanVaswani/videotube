@@ -74,7 +74,16 @@ const LoginForm = () => {
    return (
       <Card className="w-[400px]">
          <CardHeader className="text-center">
-            <img src="/logo.png" alt="logo" className="size-16 m-auto" />
+            <img
+               src="/logo.png"
+               alt="logo"
+               className="size-16 m-auto hidden dark:block"
+            />
+            <img
+               src="/logo-dark.png"
+               alt="logo"
+               className="size-16 m-auto dark:hidden"
+            />
             <CardTitle>Login</CardTitle>
             <CardDescription>
                Welcome back! Login to your account

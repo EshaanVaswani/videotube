@@ -8,7 +8,7 @@ export const videoApi = createApi({
       baseUrl: `${HOST}/api/v1/videos/`,
       credentials: "include",
    }),
-   tagTypes: ["Videos"],
+   tagTypes: ["Videos", "VideoStats"],
    endpoints: (builder) => ({
       publishVideo: builder.mutation({
          query: (data) => ({
@@ -37,21 +37,45 @@ export const videoApi = createApi({
          query: (videoId) => ({
             url: `/${videoId}`,
          }),
-         providesTags: ["Videos"],
+         providesTags: (result, error, id) => [{ type: "Videos", id }],
          transformResponse: (response) => response.data,
+      }),
+      getVideoStats: builder.query({
+         query: (videoId) => ({
+            url: `/stats/${videoId}`,
+         }),
+         providesTags: (result, id) => [{ type: "VideoStats", id }],
       }),
       viewVideo: builder.mutation({
          query: (videoId) => ({
             url: `/view/${videoId}`,
             method: "PATCH",
          }),
+         providesTags: (result, error, id) => [{ type: "VideoStats", id }],
       }),
    }),
 });
+
+export const useGetVideoData = (videoId) => {
+   const { data: video, isLoading, error } = useGetVideoByIdQuery(videoId);
+   const { data: stats } = useGetVideoStatsQuery(videoId);
+
+   return {
+      video: video
+         ? {
+              ...video,
+              ...(stats || {}),
+           }
+         : null,
+      isLoading,
+      error,
+   };
+};
 
 export const {
    usePublishVideoMutation,
    useGetVideosQuery,
    useGetVideoByIdQuery,
    useViewVideoMutation,
+   useGetVideoStatsQuery,
 } = videoApi;

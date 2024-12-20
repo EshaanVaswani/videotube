@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+import { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import {
    Bell,
@@ -12,7 +14,63 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export const VideoInfo = ({ video }) => {
+import { useToggleVideoLikeMutation } from "@/store/api/likeApi";
+import { useToggleSubscriptionMutation } from "@/store/api/subscriptionApi";
+
+export const VideoInfo = ({ video: vid }) => {
+   const [video, setVideo] = useState(vid);
+
+   const [toggleLike] = useToggleVideoLikeMutation();
+   const [toggleSubscribe] = useToggleSubscriptionMutation();
+
+   const handleLike = async () => {
+      try {
+         const res = await toggleLike(video._id).unwrap();
+
+         if (res.success) {
+            setVideo((prev) => ({
+               ...prev,
+               isLiked: !prev.isLiked,
+               likeCount: prev.isLiked
+                  ? prev.likeCount - 1
+                  : prev.likeCount + 1,
+            }));
+         }
+      } catch (error) {
+         toast.error("Something went wrong");
+      }
+   };
+
+   const handleSubscribe = async () => {
+      try {
+         const res = await toggleSubscribe(video.owner._id).unwrap();
+
+         if (res.success) {
+            setVideo((prev) => ({
+               ...prev,
+               owner: {
+                  ...prev.owner,
+                  isSubscribed: !prev.owner.isSubscribed,
+                  subscriberCount: prev.owner.isSubscribed
+                     ? prev.owner.subscriberCount - 1
+                     : prev.owner.subscriberCount + 1,
+               },
+            }));
+         }
+      } catch (error) {
+         let errorMessage = "Something went wrong";
+         if (error?.data) {
+            const match = error.data.match(/Error: (.+?)<\/pre>/);
+
+            if (match && match[1]) {
+               errorMessage = match[1];
+            }
+         }
+
+         toast.error(errorMessage);
+      }
+   };
+
    return (
       <div className="mt-4 max-w-[1280px] mx-auto px-2 sm:px-4">
          <h1 className="text-lg sm:text-xl font-bold break-words">
@@ -39,6 +97,7 @@ export const VideoInfo = ({ video }) => {
                <Button
                   variant="secondary"
                   className="text-xs sm:text-sm whitespace-nowrap"
+                  onClick={handleSubscribe}
                >
                   {video.owner.isSubscribed ? (
                      <div className="flex items-center gap-2">
@@ -54,7 +113,12 @@ export const VideoInfo = ({ video }) => {
             {/* Buttons */}
             <div className="flex flex-wrap items-center gap-2">
                <div className="flex rounded-full bg-gray-100 dark:bg-gray-800">
-                  <Button variant="ghost" size="sm" className="rounded-l-full">
+                  <Button
+                     variant="ghost"
+                     size="sm"
+                     className="rounded-l-full"
+                     onClick={handleLike}
+                  >
                      {video.isLiked ? (
                         <ThumbsUp
                            fill="currentColor"

@@ -31,6 +31,14 @@ export const Navbar = () => {
                         alt="VideoTube"
                         width={50}
                         height={50}
+                        className="hidden dark:block"
+                     />
+                     <img
+                        src="/logo-dark.png"
+                        alt="VideoTube"
+                        width={50}
+                        height={50}
+                        className="dark:hidden"
                      />
                   </div>
                </Link>

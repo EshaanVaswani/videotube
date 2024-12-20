@@ -14,6 +14,7 @@ import { VideoSkeleton } from "@/components/video/VideoSkeleton";
 
 import {
    useGetVideoByIdQuery,
+   useGetVideoData,
    useGetVideosQuery,
    useViewVideoMutation,
 } from "@/store/api/videoApi";
@@ -21,9 +22,12 @@ import {
 const Watch = () => {
    const { videoId } = useParams();
 
-   const { data: video, isLoading, error } = useGetVideoByIdQuery(videoId);
+   const { video, isLoading, error } = useGetVideoData(videoId);
+   console.log(video);
 
-   const isTheaterMode = useSelector((state) => state.video.isTheaterMode);
+   const isTheaterMode = useSelector(
+      (state) => state.videoPlayer.isTheaterMode
+   );
 
    const [viewVideo] = useViewVideoMutation();
 

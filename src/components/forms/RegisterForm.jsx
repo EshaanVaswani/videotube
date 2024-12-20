@@ -101,7 +101,12 @@ const RegisterForm = () => {
             <img
                src="/logo.png"
                alt="logo"
-               className="w-12 h-12 mx-auto mb-2"
+               className="w-12 h-12 mx-auto mb-2 hidden dark:block"
+            />
+            <img
+               src="/logo-dark.png"
+               alt="logo"
+               className="w-12 h-12 mx-auto mb-2 dark:hidden"
             />
             <CardTitle className="text-lg md:text-xl">Register</CardTitle>
          </CardHeader>
