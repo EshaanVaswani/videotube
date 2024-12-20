@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Bell, Menu, Video } from "lucide-react";
 
 import { SearchBar } from "./SearchBar";
@@ -24,9 +24,16 @@ export const Navbar = () => {
                <Button variant="ghost" onClick={() => dispatch(toggle())}>
                   <Menu className="size-1" />
                </Button>
-               <div className="flex items-center gap-1">
-                  <img src="/logo.png" alt="VideoTube" width={50} height={50} />
-               </div>
+               <Link to="/">
+                  <div className="flex items-center gap-1">
+                     <img
+                        src="/logo.png"
+                        alt="VideoTube"
+                        width={50}
+                        height={50}
+                     />
+                  </div>
+               </Link>
             </div>
 
             <SearchBar />

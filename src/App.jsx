@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
+import { Error } from "./components/Error";
 import AuthLayout from "./components/layouts/AuthLayout";
 import HomeLayout from "./components/layouts/HomeLayout";
 
@@ -17,7 +18,15 @@ const ProtectedRoute = ({ children }) => {
    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
    if (!isLoggedIn) {
-      return <Navigate to="/auth/login" replace />;
+      return (
+         <Error
+            error="Unauthorized request"
+            description="Sorry, this page is not accessible. Please login to access
+                  this page."
+            buttonLabel="Go to Login"
+            buttonLink="/auth/login"
+         />
+      );
    }
 
    return children;
@@ -39,16 +48,26 @@ function App() {
    return (
       <>
          <Routes>
+            {/* AUTH */}
             <Route path="/auth" element={<AuthLayout />}>
                <Route path="login" element={<Login />} />
                <Route path="register" element={<Register />} />
             </Route>
 
+            {/* PUBLIC */}
             <Route path="/" element={<HomeLayout />}>
                <Route path="" element={<Home />} />
             </Route>
 
-            <Route path="watch/:videoId" element={<Watch />} />
+            {/* PROTECTED */}
+            <Route
+               path="watch/:videoId"
+               element={
+                  <ProtectedRoute>
+                     <Watch />
+                  </ProtectedRoute>
+               }
+            />
          </Routes>
       </>
    );

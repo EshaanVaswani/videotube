@@ -1,5 +1,5 @@
-import { VideoGrid } from "@/components/VideoGrid";
-import { VideoCardSkeleton } from "@/components/VideoCardSkeleton";
+import { VideoGrid } from "@/components/video/VideoGrid";
+import { VideoCardSkeleton } from "@/components/video/VideoCardSkeleton";
 
 import { useGetVideosQuery } from "@/store/api/videoApi";
 

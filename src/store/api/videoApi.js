@@ -42,7 +42,7 @@ export const videoApi = createApi({
       }),
       viewVideo: builder.mutation({
          query: (videoId) => ({
-            url: `/${videoId}/view`,
+            url: `/view/${videoId}`,
             method: "PATCH",
          }),
       }),
@@ -53,4 +53,5 @@ export const {
    usePublishVideoMutation,
    useGetVideosQuery,
    useGetVideoByIdQuery,
+   useViewVideoMutation,
 } = videoApi;
