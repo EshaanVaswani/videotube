@@ -72,7 +72,7 @@ export const VideoInfo = ({ video: vid }) => {
    };
 
    return (
-      <div className="mt-4 max-w-[1280px] mx-auto px-2 sm:px-4">
+      <div className="mt-4 mx-auto px-2 sm:px-4">
          <h1 className="text-lg sm:text-xl font-bold break-words">
             {video.title}
          </h1>

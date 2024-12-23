@@ -10,10 +10,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Navbar } from "@/components/navigation/Navbar";
 import { VideoInfo } from "@/components/video/VideoInfo";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
-import { VideoSkeleton } from "@/components/video/VideoSkeleton";
+import { VideoSkeleton } from "@/components/skeleton/VideoSkeleton";
+import CommentSection from "@/components/comment/CommentSection";
 
 import {
-   useGetVideoByIdQuery,
    useGetVideoData,
    useGetVideosQuery,
    useViewVideoMutation,
@@ -23,7 +23,6 @@ const Watch = () => {
    const { videoId } = useParams();
 
    const { video, isLoading, error } = useGetVideoData(videoId);
-   console.log(video);
 
    const isTheaterMode = useSelector(
       (state) => state.videoPlayer.isTheaterMode
@@ -91,6 +90,7 @@ const Watch = () => {
                   </div>
 
                   <VideoInfo video={video} />
+                  <CommentSection videoId={videoId} />
                </div>
 
                {!isTheaterMode && (

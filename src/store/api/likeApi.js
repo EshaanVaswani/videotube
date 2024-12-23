@@ -8,7 +8,7 @@ export const likeApi = createApi({
       baseUrl: `${HOST}/api/v1/likes/`,
       credentials: "include",
    }),
-   tagTypes: ["Likes", "VideoStats"],
+   tagTypes: ["Likes", "VideoStats", "Comments"],
    endpoints: (builder) => ({
       toggleVideoLike: builder.mutation({
          query: (videoId) => ({
@@ -20,7 +20,18 @@ export const likeApi = createApi({
             "Likes",
          ],
       }),
+      toggleCommentLike: builder.mutation({
+         query: (commentId) => ({
+            url: `/toggle/c/${commentId}`,
+            method: "POST",
+         }),
+         invalidatesTags: (result, error, commentId) => [
+            { type: "Comments", id: commentId },
+            "Likes",
+         ],
+      }),
    }),
 });
 
-export const { useToggleVideoLikeMutation } = likeApi;
+export const { useToggleVideoLikeMutation, useToggleCommentLikeMutation } =
+   likeApi;

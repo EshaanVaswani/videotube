@@ -4,6 +4,7 @@ import { authApi } from "./api/authApi";
 import { videoApi } from "./api/videoApi";
 import { likeApi } from "./api/likeApi";
 import { subscriptionApi } from "./api/subscriptionApi";
+import { commentApi } from "./api/commentApi";
 
 import { authReducer } from "./reducers/authReducer";
 import { sidebarReducer } from "./reducers/sidebarReducer";
@@ -15,7 +16,9 @@ const store = configureStore({
       [authApi.reducerPath]: authApi.reducer,
       [videoApi.reducerPath]: videoApi.reducer,
       [likeApi.reducerPath]: likeApi.reducer,
+      [commentApi.reducerPath]: commentApi.reducer,
       [subscriptionApi.reducerPath]: subscriptionApi.reducer,
+
       [authReducer.name]: authReducer.reducer,
       [sidebarReducer.name]: sidebarReducer.reducer,
       [videoModalReducer.name]: videoModalReducer.reducer,
@@ -27,6 +30,7 @@ const store = configureStore({
       videoApi.middleware,
       likeApi.middleware,
       subscriptionApi.middleware,
+      commentApi.middleware,
    ],
 });
 
