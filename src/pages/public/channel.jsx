@@ -18,11 +18,13 @@ import {
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { VideoGrid } from "@/components/video/VideoGrid";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { TabsTrigger, TabsList, TabsContent, Tabs } from "@/components/ui/tabs";
+
+import { VideoGrid } from "@/components/video/VideoGrid";
+import { TweetSection } from "@/components/tweet/TweetSection";
 import { VideoCarousel } from "@/components/video/VideoCarousel";
 import { ChannelSkeleton } from "@/components/skeleton/ChannelSkeleton";
-import { TabsTrigger, TabsList, TabsContent, Tabs } from "@/components/ui/tabs";
 
 import { useGetVideosQuery } from "@/store/api/videoApi";
 import { useGetChannelProfileQuery } from "@/store/api/channelApi";
@@ -50,8 +52,6 @@ const Channel = () => {
          setChannel(data);
       }
    }, [data]);
-
-   console.log(channel);
 
    const handleSubscribe = async () => {
       if (!isLoggedIn) {
@@ -135,7 +135,7 @@ const Channel = () => {
                   </div>
                </div>
                <DropdownMenu>
-                  <DropdownMenuTrigger>
+                  <DropdownMenuTrigger asChild>
                      <Button variant="ghost" size="icon">
                         <MoreVertical />
                      </Button>
@@ -176,7 +176,7 @@ const Channel = () => {
                </TabsContent>
 
                <TabsContent value="community" className="mt-6">
-                  {/* COMMUNITY SECTION */}
+                  <TweetSection channelId={channel._id} />
                </TabsContent>
             </Tabs>
          </div>

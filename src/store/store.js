@@ -6,6 +6,7 @@ import { likeApi } from "./api/likeApi";
 import { subscriptionApi } from "./api/subscriptionApi";
 import { commentApi } from "./api/commentApi";
 import { channelApi } from "./api/channelApi";
+import { tweetApi } from "./api/tweetApi";
 
 import { authReducer } from "./reducers/authReducer";
 import { sidebarReducer } from "./reducers/sidebarReducer";
@@ -20,6 +21,7 @@ const store = configureStore({
       [commentApi.reducerPath]: commentApi.reducer,
       [channelApi.reducerPath]: channelApi.reducer,
       [subscriptionApi.reducerPath]: subscriptionApi.reducer,
+      [tweetApi.reducerPath]: tweetApi.reducer,
 
       [authReducer.name]: authReducer.reducer,
       [sidebarReducer.name]: sidebarReducer.reducer,
@@ -34,6 +36,7 @@ const store = configureStore({
       subscriptionApi.middleware,
       commentApi.middleware,
       channelApi.middleware,
+      tweetApi.middleware,
    ],
 });
 
