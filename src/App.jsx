@@ -9,8 +9,10 @@ import HomeLayout from "./components/layouts/HomeLayout";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 
-import Home from "./pages/home";
-import Watch from "./pages/watch";
+import Home from "./pages/public/home";
+import Channel from "./pages/public/channel";
+
+import Watch from "./pages/protected/watch";
 
 import { userExist, userNotExist } from "./store/reducers/authReducer";
 
@@ -57,6 +59,7 @@ function App() {
             {/* PUBLIC */}
             <Route path="/" element={<HomeLayout />}>
                <Route path="" element={<Home />} />
+               <Route path="channel/:username" element={<Channel />} />
             </Route>
 
             {/* PROTECTED */}

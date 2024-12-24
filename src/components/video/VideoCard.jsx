@@ -8,10 +8,10 @@ import {
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { formatDuration } from "@/lib/utils";
+import { cn, formatDuration } from "@/lib/utils";
 import { Link } from "react-router-dom";
 
-export const VideoCard = ({ video }) => {
+export const VideoCard = ({ video, variant = "default" }) => {
    return (
       <Link to={`/watch/${video._id}`}>
          <div className="flex flex-col gap-2">
@@ -19,25 +19,37 @@ export const VideoCard = ({ video }) => {
                <img
                   src={video.thumbnail}
                   alt={video.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                  className={cn(
+                     "w-80 aspect-video object-cover",
+                     variant !== "channel" &&
+                        "w-full h-full group-hover:scale-105 transform transition-transform duration-300"
+                  )}
                />
                <div className="absolute bottom-1 right-2 text-white z-40 text-sm bg-black/50 px-2 py-1 rounded">
                   {formatDuration(video.duration)}
                </div>
             </div>
             <div className="flex gap-3">
-               <div className="flex-shrink-0">
-                  <img
-                     src={video.owner.avatar}
-                     alt={video.owner.username}
-                     className="w-10 h-10 rounded-full"
-                  />
-               </div>
+               {variant !== "channel" && (
+                  <div className="flex-shrink-0">
+                     <Link to={`/channel/@${video.owner.username}`}>
+                        <img
+                           src={video.owner.avatar}
+                           alt={video.owner.username}
+                           className="w-10 h-10 rounded-full"
+                        />
+                     </Link>
+                  </div>
+               )}
                <div className="flex-1">
                   <h3 className="font-medium line-clamp-2">{video.title}</h3>
-                  <p className="text-sm text-gray-600 mt-0.5 hover:text-white">
-                     {video.owner.username}
-                  </p>
+                  {variant !== "channel" && (
+                     <Link to={`/channel/@${video.owner.username}`}>
+                        <p className="text-sm text-gray-600 mt-0.5 hover:text-white">
+                           {video.owner.username}
+                        </p>
+                     </Link>
+                  )}
                   <div className="text-sm text-gray-600">
                      {video.views} views •{" "}
                      {formatDistanceToNow(new Date(video.createdAt), {

@@ -7,7 +7,6 @@ import { CommentContent } from "@/components/comment/CommentContent";
 import { CommentActions } from "@/components/comment/CommentActions";
 
 import { useToggleCommentLikeMutation } from "@/store/api/likeApi";
-import { open } from "@/store/reducers/deleteCommentModalReducer";
 import { useDeleteCommentMutation } from "@/store/api/commentApi";
 
 export const Comment = memo(({ comment: c, videoId }) => {
