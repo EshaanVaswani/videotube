@@ -14,20 +14,21 @@ import { close } from "@/store/reducers/sidebarReducer";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 
-const items = [
-   { icon: Home, label: "Home", href: "/" },
-   { icon: Compass, label: "Explore", href: "/explore" },
-   { icon: PlaySquare, label: "Subscriptions", href: "/subscriptions" },
-   { icon: Clock, label: "Watch Later", href: "/watch-later" },
-   { icon: ThumbsUp, label: "Liked Videos", href: "/liked-videos" },
-   { icon: History, label: "History", href: "/history" },
-   { icon: User, label: "You", href: "/channel" },
-];
-
 export const Sidebar = () => {
    const dispatch = useDispatch();
 
+   const user = useSelector((state) => state.auth.user);
    const isOpen = useSelector((state) => state.sidebar.isOpen);
+
+   const items = [
+      { icon: Home, label: "Home", href: "/" },
+      { icon: Compass, label: "Explore", href: "/explore" },
+      { icon: PlaySquare, label: "Subscriptions", href: "/subscriptions" },
+      { icon: Clock, label: "Watch Later", href: "/watch-later" },
+      { icon: ThumbsUp, label: "Liked Videos", href: "/liked-videos" },
+      { icon: History, label: "History", href: "/history" },
+      { icon: User, label: "You", href: `/dashboard/${user?._id}` },
+   ];
 
    return (
       <>

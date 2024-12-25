@@ -6,9 +6,13 @@ export const TweetSection = ({ channelId }) => {
 
    if (!tweets) return null;
 
+   const sorted = [...tweets].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+   );
+
    return (
-      <div>
-         {tweets.map((tweet) => (
+      <div className="space-y-4">
+         {sorted.map((tweet) => (
             <TweetCard key={tweet._id} tweet={tweet} />
          ))}
       </div>

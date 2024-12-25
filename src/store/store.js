@@ -7,11 +7,13 @@ import { subscriptionApi } from "./api/subscriptionApi";
 import { commentApi } from "./api/commentApi";
 import { channelApi } from "./api/channelApi";
 import { tweetApi } from "./api/tweetApi";
+import { dashboardApi } from "./api/dashboardApi";
 
 import { authReducer } from "./reducers/authReducer";
 import { sidebarReducer } from "./reducers/sidebarReducer";
 import { videoModalReducer } from "./reducers/videoModalReducer";
 import { videoPlayerReducer } from "./reducers/videoReducer";
+import { dashboardSidebarReducer } from "./reducers/dashboardSidebarReducer";
 
 const store = configureStore({
    reducer: {
@@ -22,11 +24,13 @@ const store = configureStore({
       [channelApi.reducerPath]: channelApi.reducer,
       [subscriptionApi.reducerPath]: subscriptionApi.reducer,
       [tweetApi.reducerPath]: tweetApi.reducer,
+      [dashboardApi.reducerPath]: dashboardApi.reducer,
 
       [authReducer.name]: authReducer.reducer,
       [sidebarReducer.name]: sidebarReducer.reducer,
       [videoModalReducer.name]: videoModalReducer.reducer,
       [videoPlayerReducer.name]: videoPlayerReducer.reducer,
+      [dashboardSidebarReducer.name]: dashboardSidebarReducer.reducer,
    },
    middleware: (mid) => [
       ...mid(),
@@ -37,6 +41,7 @@ const store = configureStore({
       commentApi.middleware,
       channelApi.middleware,
       tweetApi.middleware,
+      dashboardApi.middleware,
    ],
 });
 

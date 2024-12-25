@@ -17,7 +17,35 @@ export const tweetApi = createApi({
          providesTags: ["Tweets"],
          transformResponse: (response) => response.data,
       }),
+      addTweet: builder.mutation({
+         query: ({ content }) => ({
+            url: "/",
+            method: "POST",
+            body: { content },
+         }),
+         invalidatesTags: ["Tweets"],
+      }),
+      updateTweet: builder.mutation({
+         query: ({ tweetId, content }) => ({
+            url: `/${tweetId}`,
+            method: "PATCH",
+            body: { content },
+         }),
+         invalidatesTags: ["Tweets"],
+      }),
+      deleteTweet: builder.mutation({
+         query: (tweetId) => ({
+            url: `/${tweetId}`,
+            method: "DELETE",
+         }),
+         invalidatesTags: ["Tweets"],
+      }),
    }),
 });
 
-export const { useGetUserTweetsQuery } = tweetApi;
+export const {
+   useGetUserTweetsQuery,
+   useAddTweetMutation,
+   useDeleteTweetMutation,
+   useUpdateTweetMutation,
+} = tweetApi;

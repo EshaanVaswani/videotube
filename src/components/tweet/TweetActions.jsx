@@ -1,33 +1,40 @@
-import { memo } from "react";
-import { MessagesSquare, Share2, ThumbsDown, ThumbsUp } from "lucide-react";
+import { memo, useState } from "react";
+import { Edit, Flag, MoreVertical, Trash } from "lucide-react";
 
+import {
+   DropdownMenu,
+   DropdownMenuContent,
+   DropdownMenuItem,
+   DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 
-export const TweetActions = memo(({ tweet, onLike }) => {
+export const TweetActions = memo(({ tweet, isOwner, onEdit, onDelete }) => {
+   const [dropdownOpen, setDropdownOpen] = useState(false);
+
    return (
-      <div className="flex items-center gap-2">
-         <Button variant="ghost" size="sm" onClick={() => onLike(tweet)}>
-            {tweet.isLiked ? (
-               <ThumbsUp fill="currentColor" className="h-5 w-5" />
+      <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+         <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon">
+               <MoreVertical className="size-6" />
+            </Button>
+         </DropdownMenuTrigger>
+         <DropdownMenuContent align="end">
+            {isOwner ? (
+               <>
+                  <DropdownMenuItem onClick={() => onEdit(tweet)}>
+                     <Edit /> Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onDelete(tweet)}>
+                     <Trash /> Delete
+                  </DropdownMenuItem>
+               </>
             ) : (
-               <ThumbsUp className="h-5 w-5" />
+               <DropdownMenuItem>
+                  <Flag /> Report
+               </DropdownMenuItem>
             )}
-            {tweet.likeCount}
-         </Button>
-         <Button variant="ghost" size="sm">
-            <ThumbsDown className="h-5 w-5" />
-         </Button>
-         <Button variant="ghost" size="sm" className="flex items-center gap-2">
-            <MessagesSquare className="h-5 w-5" />
-         </Button>
-         <Button
-            variant="ghost"
-            size="sm"
-            className="flex items-center gap-2 ml-auto"
-         >
-            <Share2 className="h-5 w-5" />
-            Share
-         </Button>
-      </div>
+         </DropdownMenuContent>
+      </DropdownMenu>
    );
 });

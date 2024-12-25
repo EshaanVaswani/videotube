@@ -38,6 +38,7 @@ export const authApi = createApi({
             url: "/current-user",
          }),
          providesTags: ["Users"],
+         transformResponse: (response) => response.data,
       }),
    }),
 });
@@ -47,5 +48,4 @@ export const {
    useLoginUserMutation,
    useLogoutUserMutation,
    useCurrentUserQuery,
-   useRefreshTokenMutation,
 } = authApi;

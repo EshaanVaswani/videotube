@@ -32,7 +32,7 @@ export const UserButton = () => {
       return null;
    }
 
-   const { username, avatar } = user?.data;
+   const { username, avatar } = user;
 
    const handleLogout = async () => {
       try {

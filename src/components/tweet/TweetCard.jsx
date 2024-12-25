@@ -1,31 +1,28 @@
 import { toast } from "sonner";
-import { formatDistanceToNow } from "date-fns";
-import { MoreVertical, Flag } from "lucide-react";
+import { useSelector } from "react-redux";
+import { memo, useCallback, useState } from "react";
+import { ThumbsUp, ThumbsDown, MessagesSquare, Share2 } from "lucide-react";
 
-import {
-   DropdownMenu,
-   DropdownMenuContent,
-   DropdownMenuItem,
-   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { TweetHeader } from "@/components/tweet/TweetHeader";
 import { TweetActions } from "@/components/tweet/TweetActions";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 import { useToggleTweetLikeMutation } from "@/store/api/likeApi";
-import { memo, useCallback, useState } from "react";
+import { TweetForm } from "../forms/TweetForm";
 
 export const TweetCard = memo(({ tweet: t }) => {
    const [tweet, setTweet] = useState(t);
+   const [editingTweet, setEditingTweet] = useState(null);
 
    const [toggleLike] = useToggleTweetLikeMutation();
+
+   const user = useSelector((state) => state.auth.user);
 
    const handleLike = useCallback(
       async (tweet) => {
          try {
             const res = await toggleLike(tweet._id).unwrap();
-            console.log(res);
 
             if (res.success) {
                setTweet((prev) => ({
@@ -43,49 +40,74 @@ export const TweetCard = memo(({ tweet: t }) => {
       [toggleLike]
    );
 
+   const handleEdit = useCallback((tweet) => {
+      setEditingTweet(tweet);
+   }, []);
+
+   const handleClose = useCallback(() => {
+      setEditingTweet(null);
+   }, []);
+
+   const handleDelete = () => {};
+
    return (
       <Card className="max-w-3xl">
          <CardContent className="p-4 space-y-4">
-            <div className="flex items-center justify-between">
-               <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10">
-                     <AvatarImage
-                        src={tweet.owner.avatar}
-                        alt={tweet.owner.username}
-                     />
-                  </Avatar>
-                  <div className="flex items-center gap-2">
-                     <span className="font-medium">{tweet.owner.fullName}</span>
-                     <span className="text-xs text-muted-foreground">
-                        {formatDistanceToNow(new Date(tweet.createdAt))} ago
-                     </span>
-                     {tweet.createdAt !== tweet.updatedAt && (
-                        <span className="text-xs text-muted-foreground">
-                           (edited)
-                        </span>
-                     )}
-                  </div>
-               </div>
-               <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                     <Button variant="ghost" size="icon">
-                        <MoreVertical className="h-5 w-5" />
-                     </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                     <DropdownMenuItem>
-                        <Flag />
-                        Report
-                     </DropdownMenuItem>
-                  </DropdownMenuContent>
-               </DropdownMenu>
-            </div>
+            {editingTweet?._id === tweet._id ? (
+               <TweetForm tweet={tweet} onClose={handleClose} />
+            ) : (
+               <>
+                  <div className="flex items-center justify-between">
+                     <TweetHeader tweet={tweet} />
 
-            <div className="whitespace-pre-wrap">{tweet.content}</div>
+                     <TweetActions
+                        tweet={tweet}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                        isOwner={tweet.owner._id === user._id}
+                     />
+                  </div>
+
+                  <div>{tweet.content}</div>
+               </>
+            )}
          </CardContent>
 
          <CardFooter>
-            <TweetActions tweet={tweet} onLike={handleLike} />
+            {!editingTweet && (
+               <div className="flex items-center gap-2">
+                  <Button
+                     variant="ghost"
+                     size="sm"
+                     onClick={() => handleLike(tweet)}
+                  >
+                     {tweet.isLiked ? (
+                        <ThumbsUp fill="currentColor" className="h-5 w-5" />
+                     ) : (
+                        <ThumbsUp className="h-5 w-5" />
+                     )}
+                     {tweet.likeCount}
+                  </Button>
+                  <Button variant="ghost" size="sm">
+                     <ThumbsDown className="h-5 w-5" />
+                  </Button>
+                  <Button
+                     variant="ghost"
+                     size="sm"
+                     className="flex items-center gap-2"
+                  >
+                     <MessagesSquare className="h-5 w-5" />
+                  </Button>
+                  <Button
+                     variant="ghost"
+                     size="sm"
+                     className="flex items-center gap-2 ml-auto"
+                  >
+                     <Share2 className="h-5 w-5" />
+                     Share
+                  </Button>
+               </div>
+            )}
          </CardFooter>
       </Card>
    );
