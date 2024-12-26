@@ -10,14 +10,19 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 import { useToggleTweetLikeMutation } from "@/store/api/likeApi";
 import { TweetForm } from "../forms/TweetForm";
+import { useDeleteTweetMutation } from "@/store/api/tweetApi";
+import { useConfirm } from "@/hooks/useConfirm";
 
 export const TweetCard = memo(({ tweet: t }) => {
    const [tweet, setTweet] = useState(t);
    const [editingTweet, setEditingTweet] = useState(null);
 
    const [toggleLike] = useToggleTweetLikeMutation();
+   const [deleteTweet] = useDeleteTweetMutation();
 
    const user = useSelector((state) => state.auth.user);
+
+   const confirm = useConfirm();
 
    const handleLike = useCallback(
       async (tweet) => {
@@ -48,7 +53,24 @@ export const TweetCard = memo(({ tweet: t }) => {
       setEditingTweet(null);
    }, []);
 
-   const handleDelete = () => {};
+   const handleDelete = useCallback(async () => {
+      const ok = await confirm(
+         "Delete Tweet",
+         "Are you sure you want to delete this tweet?"
+      );
+
+      if (!ok) return;
+
+      try {
+         const res = await deleteTweet(tweet._id).unwrap();
+
+         if (res.success) {
+            toast.success(res.message);
+         }
+      } catch (error) {
+         toast.error("Something went wrong");
+      }
+   }, [tweet, deleteTweet]);
 
    return (
       <Card className="max-w-3xl">

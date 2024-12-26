@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { MoreVertical, Trash, Edit, Flag } from "lucide-react";
 
 import {
@@ -10,8 +10,10 @@ import {
 import { Button } from "@/components/ui/button";
 
 export const CommentActions = memo(({ comment, onEdit, onDelete, isOwner }) => {
+   const [dropdownOpen, setDropdownOpen] = useState(false);
+
    return (
-      <DropdownMenu>
+      <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
          <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">
                <MoreVertical className="size-6" />
@@ -23,7 +25,12 @@ export const CommentActions = memo(({ comment, onEdit, onDelete, isOwner }) => {
                   <DropdownMenuItem onClick={() => onEdit(comment)}>
                      <Edit /> Edit
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onDelete(comment)}>
+                  <DropdownMenuItem
+                     onClick={() => {
+                        setDropdownOpen(false);
+                        onDelete(comment);
+                     }}
+                  >
                      <Trash /> Delete
                   </DropdownMenuItem>
                </>

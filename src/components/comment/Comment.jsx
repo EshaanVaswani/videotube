@@ -8,6 +8,7 @@ import { CommentActions } from "@/components/comment/CommentActions";
 
 import { useToggleCommentLikeMutation } from "@/store/api/likeApi";
 import { useDeleteCommentMutation } from "@/store/api/commentApi";
+import { useConfirm } from "@/hooks/useConfirm";
 
 export const Comment = memo(({ comment: c, videoId }) => {
    const user = useSelector((state) => state.auth.user);
@@ -17,6 +18,8 @@ export const Comment = memo(({ comment: c, videoId }) => {
 
    const [toggleLike] = useToggleCommentLikeMutation();
    const [deleteComment] = useDeleteCommentMutation();
+
+   const confirm = useConfirm();
 
    const handleLike = useCallback(
       async (comment) => {
@@ -48,6 +51,13 @@ export const Comment = memo(({ comment: c, videoId }) => {
    }, []);
 
    const handleDelete = useCallback(async () => {
+      const ok = await confirm(
+         "Delete Comment",
+         "Are you sure you want to delete this comment?"
+      );
+
+      if (!ok) return;
+
       try {
          const res = await deleteComment(comment._id).unwrap();
 

@@ -25,7 +25,12 @@ export const TweetActions = memo(({ tweet, isOwner, onEdit, onDelete }) => {
                   <DropdownMenuItem onClick={() => onEdit(tweet)}>
                      <Edit /> Edit
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onDelete(tweet)}>
+                  <DropdownMenuItem
+                     onClick={() => {
+                        setDropdownOpen(false);
+                        onDelete(tweet);
+                     }}
+                  >
                      <Trash /> Delete
                   </DropdownMenuItem>
                </>

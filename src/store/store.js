@@ -11,8 +11,9 @@ import { dashboardApi } from "./api/dashboardApi";
 
 import { authReducer } from "./reducers/authReducer";
 import { sidebarReducer } from "./reducers/sidebarReducer";
-import { videoModalReducer } from "./reducers/videoModalReducer";
 import { videoPlayerReducer } from "./reducers/videoReducer";
+import { videoModalReducer } from "./reducers/videoModalReducer";
+import { confirmModalReducer } from "./reducers/confirmModalReducer";
 import { dashboardSidebarReducer } from "./reducers/dashboardSidebarReducer";
 
 const store = configureStore({
@@ -30,6 +31,7 @@ const store = configureStore({
       [sidebarReducer.name]: sidebarReducer.reducer,
       [videoModalReducer.name]: videoModalReducer.reducer,
       [videoPlayerReducer.name]: videoPlayerReducer.reducer,
+      [confirmModalReducer.name]: confirmModalReducer.reducer,
       [dashboardSidebarReducer.name]: dashboardSidebarReducer.reducer,
    },
    middleware: (mid) => [
