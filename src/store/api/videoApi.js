@@ -53,6 +53,13 @@ export const videoApi = createApi({
          }),
          providesTags: (result, error, id) => [{ type: "VideoStats", id }],
       }),
+      togglePublishStatus: builder.mutation({
+         query: (videoId) => ({
+            url: `/toggle/publish/${videoId}`,
+            method: "PATCH",
+         }),
+         invalidatesTags: ["Videos"],
+      }),
    }),
 });
 
@@ -78,4 +85,5 @@ export const {
    useGetVideoByIdQuery,
    useViewVideoMutation,
    useGetVideoStatsQuery,
+   useTogglePublishStatusMutation,
 } = videoApi;

@@ -4,6 +4,7 @@ import { VideoGrid } from "@/components/video/VideoGrid";
 import { TweetSection } from "@/components/tweet/TweetSection";
 import { useParams, useSearchParams } from "react-router-dom";
 import { TweetForm } from "@/components/forms/TweetForm";
+import { DashboardVideosTable } from "@/components/dashboard/DashboardVideosTable";
 
 const Content = () => {
    const { data: videos, isLoading: videosLoading } =
@@ -35,7 +36,7 @@ const Content = () => {
             </TabsList>
 
             <TabsContent value="videos" className="mt-6">
-               <VideoGrid videos={videos} variant="channel" />
+               <DashboardVideosTable videos={videos} />
             </TabsContent>
 
             <TabsContent value="posts" className="mt-6">
