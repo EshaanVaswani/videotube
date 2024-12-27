@@ -78,6 +78,8 @@ export const VideoCarousel = ({ videos, title = "Videos" }) => {
       }
    };
 
+   if (!videos.length) return null;
+
    return (
       <div className="relative w-full px-4">
          <h2 className="text-xl font-bold mb-4">{title}</h2>

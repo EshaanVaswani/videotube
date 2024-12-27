@@ -80,7 +80,7 @@ export const DashboardNavbar = () => {
                      <DropdownMenuItem
                         onClick={() => {
                            setDropdownMenuOpen(false);
-                           dispatch(open());
+                           dispatch(open(""));
                         }}
                      >
                         <Upload className="size-5" />

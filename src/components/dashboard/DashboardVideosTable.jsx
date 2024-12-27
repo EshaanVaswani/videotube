@@ -1,28 +1,15 @@
 import { toast } from "sonner";
 import { useState } from "react";
 import {
-   flexRender,
    getCoreRowModel,
    getFilteredRowModel,
+   getPaginationRowModel,
    getSortedRowModel,
    useReactTable,
 } from "@tanstack/react-table";
-import {
-   ArrowUpDown,
-   ChevronDown,
-   Edit,
-   MoreHorizontal,
-   Trash2,
-} from "lucide-react";
+import { useDispatch } from "react-redux";
+import { ChevronDown, Edit, MoreHorizontal, Trash2 } from "lucide-react";
 
-import {
-   Table,
-   TableBody,
-   TableCell,
-   TableHead,
-   TableHeader,
-   TableRow,
-} from "@/components/ui/table";
 import {
    DropdownMenu,
    DropdownMenuCheckboxItem,
@@ -33,17 +20,29 @@ import {
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/dashboard/table/Table";
+import { SortButton } from "@/components/dashboard/table/SortButton";
+import { PaginationTools } from "@/components/dashboard/table/PaginationTools";
 
 import { formatDuration } from "@/lib/utils";
-import { useTogglePublishStatusMutation } from "@/store/api/videoApi";
-import { SortButton } from "./SortButton";
+import { useConfirm } from "@/hooks/useConfirm";
+
+import {
+   useDeleteVideoMutation,
+   useTogglePublishStatusMutation,
+} from "@/store/api/videoApi";
+import { updateOpen } from "@/store/reducers/videoModalReducer";
 
 export const DashboardVideosTable = ({ videos: v }) => {
+   const dispatch = useDispatch();
+
    const [sorting, setSorting] = useState([]);
    const [columnFilters, setColumnFilters] = useState([]);
    const [columnVisibility, setColumnVisibility] = useState({});
 
    const [videos, setVideos] = useState(v);
+
+   const confirm = useConfirm();
 
    const columns = [
       {
@@ -126,23 +125,38 @@ export const DashboardVideosTable = ({ videos: v }) => {
       {
          id: "actions",
          enableHiding: false,
-         cell: () => (
-            <DropdownMenu>
-               <DropdownMenuTrigger asChild>
-                  <Button variant="ghost">
-                     <MoreHorizontal />
-                  </Button>
-               </DropdownMenuTrigger>
-               <DropdownMenuContent>
-                  <DropdownMenuItem>
-                     <Edit /> Edit
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                     <Trash2 /> Delete
-                  </DropdownMenuItem>
-               </DropdownMenuContent>
-            </DropdownMenu>
-         ),
+         cell: ({ row }) => {
+            const [dropdownOpen, setDropdownOpen] = useState(false);
+            const videoId = row.getValue("id");
+
+            return (
+               <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+                  <DropdownMenuTrigger asChild>
+                     <Button variant="ghost">
+                        <MoreHorizontal />
+                     </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                     <DropdownMenuItem
+                        onClick={() => {
+                           setDropdownOpen(false);
+                           dispatch(updateOpen({ videoId }));
+                        }}
+                     >
+                        <Edit /> Edit
+                     </DropdownMenuItem>
+                     <DropdownMenuItem
+                        onClick={() => {
+                           setDropdownOpen(false);
+                           handleDelete(videoId);
+                        }}
+                     >
+                        <Trash2 /> Delete
+                     </DropdownMenuItem>
+                  </DropdownMenuContent>
+               </DropdownMenu>
+            );
+         },
       },
    ];
 
@@ -152,6 +166,7 @@ export const DashboardVideosTable = ({ videos: v }) => {
       getCoreRowModel: getCoreRowModel(),
       getSortedRowModel: getSortedRowModel(),
       getFilteredRowModel: getFilteredRowModel(),
+      getPaginationRowModel: getPaginationRowModel(),
       onSortingChange: setSorting,
       onColumnFiltersChange: setColumnFilters,
       onColumnVisibilityChange: setColumnVisibility,
@@ -163,6 +178,7 @@ export const DashboardVideosTable = ({ videos: v }) => {
    });
 
    const [toggle] = useTogglePublishStatusMutation();
+   const [deleteVideo] = useDeleteVideoMutation();
 
    const togglePublishStatus = async (row) => {
       const videoId = row.getValue("id");
@@ -176,6 +192,26 @@ export const DashboardVideosTable = ({ videos: v }) => {
                   v._id === videoId ? { ...v, isPublished: !v.isPublished } : v
                )
             );
+            toast.success(res.message);
+         }
+      } catch (error) {
+         toast.error("Something went wrong");
+      }
+   };
+
+   const handleDelete = async (videoId) => {
+      const ok = confirm(
+         "Delete this video",
+         "Are you sure you want to delete this video?"
+      );
+
+      if (!ok) return;
+
+      try {
+         const res = await deleteVideo(videoId).unwrap();
+
+         if (res.success) {
+            setVideos((prev) => prev.filter((v) => v._id !== videoId));
             toast.success(res.message);
          }
       } catch (error) {
@@ -216,54 +252,12 @@ export const DashboardVideosTable = ({ videos: v }) => {
                </DropdownMenuContent>
             </DropdownMenu>
          </div>
+
          <div className="rounded-md border text-center">
-            <Table>
-               <TableHeader>
-                  {table.getHeaderGroups().map((hg) => (
-                     <TableRow key={hg.id}>
-                        {hg.headers.map((h) => (
-                           <TableHead key={h.id}>
-                              {h.isPlaceholder
-                                 ? null
-                                 : flexRender(
-                                      h.column.columnDef.header,
-                                      h.getContext()
-                                   )}
-                           </TableHead>
-                        ))}
-                     </TableRow>
-                  ))}
-               </TableHeader>
-               <TableBody>
-                  {table.getRowModel().rows?.length ? (
-                     table.getRowModel().rows.map((r) => (
-                        <TableRow
-                           key={r.id}
-                           data-state={r.getIsSelected() && "selected"}
-                        >
-                           {r.getVisibleCells().map((c) => (
-                              <TableCell key={c.id}>
-                                 {flexRender(
-                                    c.column.columnDef.cell,
-                                    c.getContext()
-                                 )}
-                              </TableCell>
-                           ))}
-                        </TableRow>
-                     ))
-                  ) : (
-                     <TableRow>
-                        <TableCell
-                           colSpan={columns.length}
-                           className="h-24 text-center"
-                        >
-                           No results.
-                        </TableCell>
-                     </TableRow>
-                  )}
-               </TableBody>
-            </Table>
+            <DataTable table={table} />
          </div>
+
+         <PaginationTools table={table} />
       </>
    );
 };

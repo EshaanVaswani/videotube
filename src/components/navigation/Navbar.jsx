@@ -54,7 +54,7 @@ export const Navbar = () => {
                         variant="ghost"
                         size="icon"
                         className="hidden sm:inline-flex"
-                        onClick={() => dispatch(open())}
+                        onClick={() => dispatch(open(""))}
                      >
                         <Video className="size-7" />
                      </Button>

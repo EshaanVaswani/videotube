@@ -8,7 +8,7 @@ export const videoApi = createApi({
       baseUrl: `${HOST}/api/v1/videos/`,
       credentials: "include",
    }),
-   tagTypes: ["Videos", "VideoStats"],
+   tagTypes: ["Videos", "VideoStats", "Video"],
    endpoints: (builder) => ({
       publishVideo: builder.mutation({
          query: (data) => ({
@@ -37,7 +37,7 @@ export const videoApi = createApi({
          query: (videoId) => ({
             url: `/${videoId}`,
          }),
-         providesTags: (result, error, id) => [{ type: "Videos", id }],
+         providesTags: (result, error, id) => [{ type: "Video", id }],
          transformResponse: (response) => response.data,
       }),
       getVideoStats: builder.query({
@@ -57,6 +57,21 @@ export const videoApi = createApi({
          query: (videoId) => ({
             url: `/toggle/publish/${videoId}`,
             method: "PATCH",
+         }),
+         invalidatesTags: ["Videos"],
+      }),
+      updateVideo: builder.mutation({
+         query: ({ videoId, data }) => ({
+            url: `/${videoId}`,
+            method: "PATCH",
+            body: data,
+         }),
+         invalidatesTags: ["Videos"],
+      }),
+      deleteVideo: builder.mutation({
+         query: (videoId) => ({
+            url: `/${videoId}`,
+            method: "DELETE",
          }),
          invalidatesTags: ["Videos"],
       }),
@@ -86,4 +101,6 @@ export const {
    useViewVideoMutation,
    useGetVideoStatsQuery,
    useTogglePublishStatusMutation,
+   useUpdateVideoMutation,
+   useDeleteVideoMutation,
 } = videoApi;
