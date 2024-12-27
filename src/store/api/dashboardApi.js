@@ -17,7 +17,15 @@ export const dashboardApi = createApi({
          providesTags: ["Dashboard"],
          transformResponse: (response) => response.data,
       }),
+      getChannelStats: builder.query({
+         query: () => ({
+            url: `/stats`,
+         }),
+         providesTags: ["Dashboard"],
+         transformResponse: (response) => response.data,
+      }),
    }),
 });
 
-export const { useGetChannelVideosQuery } = dashboardApi;
+export const { useGetChannelVideosQuery, useGetChannelStatsQuery } =
+   dashboardApi;
