@@ -14,6 +14,7 @@ import Register from "./pages/auth/Register";
 
 import Home from "./pages/public/home";
 import Channel from "./pages/public/channel";
+import Playlist from "./pages/public/playlist";
 
 import Watch from "./pages/protected/watch";
 import Dashboard from "./pages/protected/dashboard";
@@ -81,6 +82,7 @@ function App() {
             <Route path="/" element={<HomeLayout />}>
                <Route path="" element={<Home />} />
                <Route path="channel/:username" element={<Channel />} />
+               <Route path="playlist/:playlistId" element={<Playlist />} />
             </Route>
 
             {/* PROTECTED */}

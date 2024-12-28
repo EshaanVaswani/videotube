@@ -15,7 +15,8 @@ import { UserButton } from "@/components/UserButton";
 import { ModeToggle } from "@/components/ModeToggle";
 import { SearchBar } from "@/components/navigation/SearchBar";
 
-import { open } from "@/store/reducers/videoModalReducer";
+import { open as openVideoModal } from "@/store/reducers/videoModalReducer";
+import { open as openPlaylistModal } from "@/store/reducers/playlistModalReducer";
 import { toggle } from "@/store/reducers/dashboardSidebarReducer";
 import {
    DropdownMenu,
@@ -80,7 +81,7 @@ export const DashboardNavbar = () => {
                      <DropdownMenuItem
                         onClick={() => {
                            setDropdownMenuOpen(false);
-                           dispatch(open(""));
+                           dispatch(openVideoModal(""));
                         }}
                      >
                         <Upload className="size-5" />
@@ -92,7 +93,12 @@ export const DashboardNavbar = () => {
                            Create Post
                         </DropdownMenuItem>
                      </Link>
-                     <DropdownMenuItem>
+                     <DropdownMenuItem
+                        onClick={() => {
+                           setDropdownMenuOpen(false);
+                           dispatch(openPlaylistModal());
+                        }}
+                     >
                         <ListPlus className="size-5" />
                         New Playlist
                      </DropdownMenuItem>

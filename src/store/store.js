@@ -8,6 +8,7 @@ import { commentApi } from "./api/commentApi";
 import { channelApi } from "./api/channelApi";
 import { tweetApi } from "./api/tweetApi";
 import { dashboardApi } from "./api/dashboardApi";
+import { playlistApi } from "./api/playlistApi";
 
 import { authReducer } from "./reducers/authReducer";
 import { sidebarReducer } from "./reducers/sidebarReducer";
@@ -15,6 +16,8 @@ import { videoPlayerReducer } from "./reducers/videoReducer";
 import { videoModalReducer } from "./reducers/videoModalReducer";
 import { confirmModalReducer } from "./reducers/confirmModalReducer";
 import { dashboardSidebarReducer } from "./reducers/dashboardSidebarReducer";
+import { playlistModalReducer } from "./reducers/playlistModalReducer";
+import { saveModalReducer } from "./reducers/saveModalReducer";
 
 const store = configureStore({
    reducer: {
@@ -26,6 +29,7 @@ const store = configureStore({
       [subscriptionApi.reducerPath]: subscriptionApi.reducer,
       [tweetApi.reducerPath]: tweetApi.reducer,
       [dashboardApi.reducerPath]: dashboardApi.reducer,
+      [playlistApi.reducerPath]: playlistApi.reducer,
 
       [authReducer.name]: authReducer.reducer,
       [sidebarReducer.name]: sidebarReducer.reducer,
@@ -33,6 +37,8 @@ const store = configureStore({
       [videoPlayerReducer.name]: videoPlayerReducer.reducer,
       [confirmModalReducer.name]: confirmModalReducer.reducer,
       [dashboardSidebarReducer.name]: dashboardSidebarReducer.reducer,
+      [playlistModalReducer.name]: playlistModalReducer.reducer,
+      [saveModalReducer.name]: saveModalReducer.reducer,
    },
    middleware: (mid) => [
       ...mid(),
@@ -44,6 +50,7 @@ const store = configureStore({
       channelApi.middleware,
       tweetApi.middleware,
       dashboardApi.middleware,
+      playlistApi.middleware,
    ],
 });
 

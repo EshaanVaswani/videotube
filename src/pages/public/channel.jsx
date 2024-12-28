@@ -1,12 +1,5 @@
 import { toast } from "sonner";
-import {
-   Bell,
-   Flag,
-   MoreHorizontal,
-   MoreVertical,
-   Share,
-   Share2,
-} from "lucide-react";
+import { Bell, Flag, MoreVertical, Share2 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -21,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { TabsTrigger, TabsList, TabsContent, Tabs } from "@/components/ui/tabs";
 
+import { Loader } from "@/components/Loader";
 import { VideoGrid } from "@/components/video/VideoGrid";
 import { TweetSection } from "@/components/tweet/TweetSection";
 import { VideoCarousel } from "@/components/video/VideoCarousel";
@@ -29,6 +23,8 @@ import { ChannelSkeleton } from "@/components/skeleton/ChannelSkeleton";
 import { useGetVideosQuery } from "@/store/api/videoApi";
 import { useGetChannelProfileQuery } from "@/store/api/channelApi";
 import { useToggleSubscriptionMutation } from "@/store/api/subscriptionApi";
+import { PlaylistGrid } from "@/components/playlist/playlistGrid";
+import { useGetPlaylistsQuery } from "@/store/api/playlistApi";
 
 const Channel = () => {
    const { username: u } = useParams();
@@ -37,12 +33,23 @@ const Channel = () => {
 
    const [channel, setChannel] = useState(null);
 
-   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
    const { data: videos, isLoading: videosLoading } = useGetVideosQuery({
       page: 1,
       limit: 10,
       userId: channel?._id,
+   });
+
+   const { data: playlists, isLoading: playlistsLoading } =
+      useGetPlaylistsQuery(channel?._id);
+
+   const filteredPlaylists = playlists?.filter((playlist) => {
+      if (!user) return playlist.visibility;
+
+      if (user._id === playlist.owner._id) return true;
+
+      return playlist.visibility;
    });
 
    const [toggleSubscribe] = useToggleSubscriptionMutation();
@@ -88,6 +95,10 @@ const Channel = () => {
    };
 
    if (isLoading || !channel) return <ChannelSkeleton />;
+
+   if (videosLoading || playlistsLoading) {
+      return <Loader />;
+   }
 
    return (
       <div className="w-full">
@@ -160,6 +171,12 @@ const Channel = () => {
                      Videos
                   </TabsTrigger>
                   <TabsTrigger
+                     value="playlists"
+                     className="flex-1 sm:flex-none"
+                  >
+                     Playlists
+                  </TabsTrigger>
+                  <TabsTrigger
                      value="community"
                      className="flex-1 sm:flex-none"
                   >
@@ -173,6 +190,13 @@ const Channel = () => {
 
                <TabsContent value="videos" className="mt-6">
                   <VideoGrid videos={videos} variant="channel" />
+               </TabsContent>
+
+               <TabsContent value="playlists" className="mt-6">
+                  <PlaylistGrid
+                     playlists={filteredPlaylists}
+                     channelId={channel._id}
+                  />
                </TabsContent>
 
                <TabsContent value="community" className="mt-6">

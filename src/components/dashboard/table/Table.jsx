@@ -9,7 +9,7 @@ import {
    TableRow,
 } from "@/components/ui/table";
 
-export const DataTable = ({ table }) => {
+export const DataTable = ({ table, columns }) => {
    return (
       <Table>
          <TableHeader>

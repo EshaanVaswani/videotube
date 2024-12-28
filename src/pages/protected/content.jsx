@@ -5,18 +5,25 @@ import { TweetSection } from "@/components/tweet/TweetSection";
 import { useParams, useSearchParams } from "react-router-dom";
 import { TweetForm } from "@/components/forms/TweetForm";
 import { DashboardVideosTable } from "@/components/dashboard/DashboardVideosTable";
+import { DashboardPlaylistsTable } from "@/components/dashboard/DashboardPlaylistsTable";
+import { Loader } from "@/components/Loader";
+import { useGetPlaylistsQuery } from "@/store/api/playlistApi";
 
 const Content = () => {
+   const { userId } = useParams();
+
    const { data: videos, isLoading: videosLoading } =
       useGetChannelVideosQuery();
-
-   const { userId } = useParams();
+   const { data: playlists, isLoading: playlistsLoading } =
+      useGetPlaylistsQuery(userId);
 
    const params = useSearchParams();
 
    const tab = params[0].get("tab");
 
-   if (!videos) return null;
+   if (videosLoading || playlistsLoading) return <Loader />;
+
+   if (!videos || !playlists) return null;
 
    return (
       <div>
@@ -44,7 +51,9 @@ const Content = () => {
                <TweetSection channelId={userId} />
             </TabsContent>
 
-            <TabsContent value="playlists" className="mt-6"></TabsContent>
+            <TabsContent value="playlists" className="mt-6">
+               <DashboardPlaylistsTable playlists={playlists} />
+            </TabsContent>
          </Tabs>
       </div>
    );

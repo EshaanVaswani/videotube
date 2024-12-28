@@ -1,5 +1,6 @@
 import { toast } from "sonner";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { formatDistanceToNow } from "date-fns";
 import {
    Bell,
@@ -14,11 +15,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
+import { open } from "@/store/reducers/saveModalReducer";
 import { useToggleVideoLikeMutation } from "@/store/api/likeApi";
 import { useToggleSubscriptionMutation } from "@/store/api/subscriptionApi";
 
 export const VideoInfo = ({ video: vid }) => {
    const [video, setVideo] = useState(vid);
+
+   const dispatch = useDispatch();
 
    const [toggleLike] = useToggleVideoLikeMutation();
    const [toggleSubscribe] = useToggleSubscriptionMutation();
@@ -148,7 +152,12 @@ export const VideoInfo = ({ video: vid }) => {
                   <span className="hidden md:inline">Download</span>
                </Button>
 
-               <Button variant="ghost" size="sm" className="rounded-full">
+               <Button
+                  variant="ghost"
+                  size="sm"
+                  className="rounded-full"
+                  onClick={() => dispatch(open({ videoId: video._id }))}
+               >
                   <Bookmark className="mr-1 h-4 w-4" />
                   <span className="hidden md:inline">Save</span>
                </Button>
