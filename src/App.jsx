@@ -14,11 +14,11 @@ import Register from "./pages/auth/Register";
 
 import Home from "./pages/public/home";
 import Channel from "./pages/public/channel";
-import Playlist from "./pages/public/playlist";
 
 import Watch from "./pages/protected/watch";
 import Dashboard from "./pages/protected/dashboard";
 import Content from "./pages/protected/content";
+import Playlist from "./pages/protected/playlist";
 
 import { useCurrentUserQuery } from "./store/api/authApi";
 import { userExist, userNotExist } from "./store/reducers/authReducer";
@@ -72,20 +72,24 @@ function App() {
    return (
       <>
          <Routes>
-            {/* AUTH */}
             <Route path="/auth" element={<AuthLayout />}>
                <Route path="login" element={<Login />} />
                <Route path="register" element={<Register />} />
             </Route>
 
-            {/* PUBLIC */}
             <Route path="/" element={<HomeLayout />}>
                <Route path="" element={<Home />} />
                <Route path="channel/:username" element={<Channel />} />
-               <Route path="playlist/:playlistId" element={<Playlist />} />
+               <Route
+                  path="playlist/:playlistId"
+                  element={
+                     <ProtectedRoute>
+                        <Playlist />
+                     </ProtectedRoute>
+                  }
+               />
             </Route>
 
-            {/* PROTECTED */}
             <Route
                path="watch/:videoId"
                element={

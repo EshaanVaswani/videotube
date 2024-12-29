@@ -1,9 +1,6 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { formatDistanceToNow } from "date-fns";
-import { Link, useParams } from "react-router-dom";
-
-import { formatDuration } from "@/lib/utils";
+import { useParams } from "react-router-dom";
 
 import { Error } from "@/components/Error";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -18,6 +15,7 @@ import {
    useGetVideosQuery,
    useViewVideoMutation,
 } from "@/store/api/videoApi";
+import { VideoList } from "@/components/video/VideoList";
 
 const Watch = () => {
    const { videoId } = useParams();
@@ -127,43 +125,7 @@ const SuggestedVideos = ({ currentVideoId }) => {
       );
    }
 
-   return (
-      <div className="grid grid-cols-1 gap-3">
-         {filteredVideos.map((video) => (
-            <Link
-               key={video._id}
-               to={`/watch/${video._id}`}
-               className="flex gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-2"
-            >
-               <div className="relative w-40 h-24 flex-shrink-0">
-                  <img
-                     src={video.thumbnail}
-                     alt={video.title}
-                     className="w-full h-full object-cover rounded-lg"
-                  />
-                  <span className="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1 rounded">
-                     {formatDuration(video.duration)}
-                  </span>
-               </div>
-               <div className="flex-1 min-w-0">
-                  <h3 className="font-medium text-sm line-clamp-2">
-                     {video.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                     {video.owner.username}
-                  </p>
-                  <div className="flex items-center text-xs text-muted-foreground mt-1">
-                     <span>{video.views} views</span>
-                     <span className="mx-1">•</span>
-                     <span>
-                        {formatDistanceToNow(new Date(video.createdAt))} ago
-                     </span>
-                  </div>
-               </div>
-            </Link>
-         ))}
-      </div>
-   );
+   return <VideoList videos={filteredVideos} />;
 };
 
 export default Watch;

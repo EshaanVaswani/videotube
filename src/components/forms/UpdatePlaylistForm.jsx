@@ -65,8 +65,6 @@ export const UpdatePlaylistForm = ({ playlistId }) => {
    }, [playlist, form]);
 
    const onSubmit = async (values) => {
-      console.log(values);
-
       setIsLoading(true);
       try {
          const res = await update({
