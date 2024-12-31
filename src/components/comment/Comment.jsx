@@ -69,7 +69,7 @@ export const Comment = memo(({ comment: c, videoId }) => {
       }
    }, [comment, deleteComment]);
 
-   const isOwner = user._id === comment.owner._id;
+   const isOwner = user?._id === comment.owner._id;
 
    return (
       <div className="flex gap-4">

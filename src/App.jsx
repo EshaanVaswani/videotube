@@ -14,11 +14,12 @@ import Register from "./pages/auth/Register";
 
 import Home from "./pages/public/home";
 import Channel from "./pages/public/channel";
+import Watch from "./pages/public/watch";
 
-import Watch from "./pages/protected/watch";
 import Dashboard from "./pages/protected/dashboard";
 import Content from "./pages/protected/content";
 import Playlist from "./pages/protected/playlist";
+import Subscriptions from "./pages/protected/subscriptions";
 
 import { useCurrentUserQuery } from "./store/api/authApi";
 import { userExist, userNotExist } from "./store/reducers/authReducer";
@@ -80,24 +81,18 @@ function App() {
             <Route path="/" element={<HomeLayout />}>
                <Route path="" element={<Home />} />
                <Route path="channel/:username" element={<Channel />} />
+               <Route path="playlist/:playlistId" element={<Playlist />} />
                <Route
-                  path="playlist/:playlistId"
+                  path="subscriptions"
                   element={
                      <ProtectedRoute>
-                        <Playlist />
+                        <Subscriptions />
                      </ProtectedRoute>
                   }
                />
             </Route>
 
-            <Route
-               path="watch/:videoId"
-               element={
-                  <ProtectedRoute>
-                     <Watch />
-                  </ProtectedRoute>
-               }
-            />
+            <Route path="watch/:videoId" element={<Watch />} />
             <Route
                path="dashboard/:userId"
                element={

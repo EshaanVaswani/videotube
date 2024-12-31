@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { formatDistanceToNow } from "date-fns";
 import {
    Bell,
@@ -24,10 +25,17 @@ export const VideoInfo = ({ video: vid }) => {
 
    const dispatch = useDispatch();
 
+   const user = useSelector((state) => state.auth.user);
+
    const [toggleLike] = useToggleVideoLikeMutation();
    const [toggleSubscribe] = useToggleSubscriptionMutation();
 
    const handleLike = async () => {
+      if (!user) {
+         toast.error("Please login to like the video");
+         return;
+      }
+
       try {
          const res = await toggleLike(video._id).unwrap();
 
@@ -46,6 +54,11 @@ export const VideoInfo = ({ video: vid }) => {
    };
 
    const handleSubscribe = async () => {
+      if (!user) {
+         toast.error("Please login to subscribe");
+         return;
+      }
+
       try {
          const res = await toggleSubscribe(video.owner._id).unwrap();
 
@@ -84,16 +97,20 @@ export const VideoInfo = ({ video: vid }) => {
          <div className="flex flex-col sm:flex-row justify-between mt-4 gap-4">
             {/* Channel Info */}
             <div className="flex items-center gap-4">
-               <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
-                  <AvatarImage src={video.owner.avatar} />
-                  <AvatarFallback className="rounded-full text-white bg-sky-500">
-                     {video.owner.username.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-               </Avatar>
+               <Link to={`/channel/@${video.owner.username}`}>
+                  <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
+                     <AvatarImage src={video.owner.avatar} />
+                     <AvatarFallback className="rounded-full text-white bg-sky-500">
+                        {video.owner.username.charAt(0).toUpperCase()}
+                     </AvatarFallback>
+                  </Avatar>
+               </Link>
                <div className="flex-1">
-                  <p className="font-semibold text-sm sm:text-base">
-                     {video.owner.fullName}
-                  </p>
+                  <Link to={`/channel/@${video.owner.username}`}>
+                     <p className="font-semibold text-sm sm:text-base">
+                        {video.owner.fullName}
+                     </p>
+                  </Link>
                   <p className="text-xs sm:text-sm text-muted-foreground">
                      {video.owner.subscriberCount} subscribers
                   </p>

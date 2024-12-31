@@ -54,7 +54,11 @@ export const VideoActions = ({ video, variant = "default" }) => {
                {variant === "playlist" && (
                   <>
                      <DropdownMenuSeparator />
-                     <DropdownMenuItem>
+                     <DropdownMenuItem
+                        onClick={(e) => {
+                           e.stopPropagation();
+                        }}
+                     >
                         <Trash2 />
                         Remove from playlist
                      </DropdownMenuItem>

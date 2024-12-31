@@ -13,7 +13,7 @@ export const PlaylistGrid = ({ playlists, channelId }) => {
 
    return (
       <>
-         {!playlists.length ? (
+         {!playlists?.length ? (
             <div className="flex flex-col items-center justify-center text-center gap-4 p-8">
                {user?._id !== channelId ? (
                   <p>This channel has no playlists.</p>

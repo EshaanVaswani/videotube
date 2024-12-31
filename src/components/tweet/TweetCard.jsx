@@ -4,14 +4,14 @@ import { memo, useCallback, useState } from "react";
 import { ThumbsUp, ThumbsDown, MessagesSquare, Share2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { TweetForm } from "@/components/forms/TweetForm";
 import { TweetHeader } from "@/components/tweet/TweetHeader";
 import { TweetActions } from "@/components/tweet/TweetActions";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
-import { useToggleTweetLikeMutation } from "@/store/api/likeApi";
-import { TweetForm } from "../forms/TweetForm";
-import { useDeleteTweetMutation } from "@/store/api/tweetApi";
 import { useConfirm } from "@/hooks/useConfirm";
+import { useToggleTweetLikeMutation } from "@/store/api/likeApi";
+import { useDeleteTweetMutation } from "@/store/api/tweetApi";
 
 export const TweetCard = memo(({ tweet: t }) => {
    const [tweet, setTweet] = useState(t);
@@ -26,6 +26,11 @@ export const TweetCard = memo(({ tweet: t }) => {
 
    const handleLike = useCallback(
       async (tweet) => {
+         if (!user) {
+            toast.error("Please login to like this tweet");
+            return;
+         }
+
          try {
             const res = await toggleLike(tweet._id).unwrap();
 
@@ -86,7 +91,7 @@ export const TweetCard = memo(({ tweet: t }) => {
                         tweet={tweet}
                         onEdit={handleEdit}
                         onDelete={handleDelete}
-                        isOwner={tweet.owner._id === user._id}
+                        isOwner={tweet.owner._id === user?._id}
                      />
                   </div>
 

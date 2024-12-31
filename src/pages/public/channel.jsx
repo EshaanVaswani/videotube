@@ -42,7 +42,9 @@ const Channel = () => {
    });
 
    const { data: playlists, isLoading: playlistsLoading } =
-      useGetPlaylistsQuery(channel?._id);
+      useGetPlaylistsQuery(channel?._id, {
+         skip: !channel,
+      });
 
    const filteredPlaylists = playlists?.filter((playlist) => {
       if (!user) return playlist.visibility;
@@ -59,6 +61,8 @@ const Channel = () => {
          setChannel(data);
       }
    }, [data]);
+
+   console.log(channel);
 
    const handleSubscribe = async () => {
       if (!isLoggedIn) {

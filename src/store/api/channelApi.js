@@ -6,6 +6,7 @@ export const channelApi = createApi({
    reducerPath: "channelApi",
    baseQuery: fetchBaseQuery({
       baseUrl: `${HOST}/api/v1/users/`,
+      credentials: "include",
    }),
    tagTypes: ["Channel"],
    endpoints: (builder) => ({

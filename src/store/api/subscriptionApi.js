@@ -20,7 +20,15 @@ export const subscriptionApi = createApi({
             "Subscriptions",
          ],
       }),
+      getSubscribedChannels: builder.query({
+         query: (subscriberId) => ({
+            url: `/u/${subscriberId}`,
+         }),
+         providesTags: ["Subscriptions"],
+         transformResponse: (response) => response.data,
+      }),
    }),
 });
 
-export const { useToggleSubscriptionMutation } = subscriptionApi;
+export const { useToggleSubscriptionMutation, useGetSubscribedChannelsQuery } =
+   subscriptionApi;
