@@ -7,7 +7,7 @@ export const PlaylistInfo = ({ playlist }) => {
       <div className="lg:col-span-1 space-y-4">
          <div className="relative aspect-video w-full">
             <img
-               src={playlist.playlistVideos[0].thumbnail}
+               src={playlist.playlistVideos[0]?.thumbnail}
                alt={playlist.name}
                className="w-full h-full object-cover rounded-lg"
             />

@@ -33,6 +33,12 @@ const Playlist = () => {
 
             <div className="lg:col-span-2">
                <ScrollArea className="h-[calc(100vh-10rem)] pr-4">
+                  {playlist.playlistVideos.length === 0 && (
+                     <div className="flex flex-col items-center justify-center h-[calc(100vh-10rem)]">
+                        <AlertTriangle className="size-8" />
+                        <p className="text-lg mt-4">No videos found</p>
+                     </div>
+                  )}
                   <VideoList
                      videos={playlist.playlistVideos}
                      variant="playlist"

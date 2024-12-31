@@ -8,7 +8,7 @@ export const likeApi = createApi({
       baseUrl: `${HOST}/api/v1/likes/`,
       credentials: "include",
    }),
-   tagTypes: ["Likes", "VideoStats", "Comments", "Tweets"],
+   tagTypes: ["Likes", "VideoStats", "Comments", "Tweets", "Videos"],
    endpoints: (builder) => ({
       toggleVideoLike: builder.mutation({
          query: (videoId) => ({
@@ -40,6 +40,13 @@ export const likeApi = createApi({
             "Likes",
          ],
       }),
+      getLikedVideos: builder.query({
+         query: () => ({
+            url: "/videos",
+         }),
+         providesTags: ["Likes", "Videos"],
+         transformResponse: (response) => response.data,
+      }),
    }),
 });
 
@@ -47,4 +54,5 @@ export const {
    useToggleVideoLikeMutation,
    useToggleCommentLikeMutation,
    useToggleTweetLikeMutation,
+   useGetLikedVideosQuery,
 } = likeApi;

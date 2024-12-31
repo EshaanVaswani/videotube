@@ -15,11 +15,13 @@ import Register from "./pages/auth/Register";
 import Home from "./pages/public/home";
 import Channel from "./pages/public/channel";
 import Watch from "./pages/public/watch";
+import Playlist from "./pages/public/playlist";
 
 import Dashboard from "./pages/protected/dashboard";
 import Content from "./pages/protected/content";
-import Playlist from "./pages/protected/playlist";
 import Subscriptions from "./pages/protected/subscriptions";
+import LikedVideos from "./pages/protected/liked-videos";
+import History from "./pages/protected/history";
 
 import { useCurrentUserQuery } from "./store/api/authApi";
 import { userExist, userNotExist } from "./store/reducers/authReducer";
@@ -87,6 +89,22 @@ function App() {
                   element={
                      <ProtectedRoute>
                         <Subscriptions />
+                     </ProtectedRoute>
+                  }
+               />
+               <Route
+                  path="liked-videos"
+                  element={
+                     <ProtectedRoute>
+                        <LikedVideos />
+                     </ProtectedRoute>
+                  }
+               />
+               <Route
+                  path="history"
+                  element={
+                     <ProtectedRoute>
+                        <History />
                      </ProtectedRoute>
                   }
                />

@@ -9,6 +9,7 @@ import { channelApi } from "./api/channelApi";
 import { tweetApi } from "./api/tweetApi";
 import { dashboardApi } from "./api/dashboardApi";
 import { playlistApi } from "./api/playlistApi";
+import { historyApi } from "./api/historyApi";
 
 import { authReducer } from "./reducers/authReducer";
 import { sidebarReducer } from "./reducers/sidebarReducer";
@@ -30,6 +31,7 @@ const store = configureStore({
       [tweetApi.reducerPath]: tweetApi.reducer,
       [dashboardApi.reducerPath]: dashboardApi.reducer,
       [playlistApi.reducerPath]: playlistApi.reducer,
+      [historyApi.reducerPath]: historyApi.reducer,
 
       [authReducer.name]: authReducer.reducer,
       [sidebarReducer.name]: sidebarReducer.reducer,
@@ -51,6 +53,7 @@ const store = configureStore({
       tweetApi.middleware,
       dashboardApi.middleware,
       playlistApi.middleware,
+      historyApi.middleware,
    ],
 });
 
