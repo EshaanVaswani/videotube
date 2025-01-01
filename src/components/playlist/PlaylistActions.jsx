@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { useConfirm } from "@/hooks/useConfirm";
 import { updateOpen } from "@/store/reducers/playlistModalReducer";
 import { useDeletePlaylistMutation } from "@/store/api/playlistApi";
+import { open as openShare } from "@/store/reducers/shareModalReducer";
 
 export const PlaylistActions = ({ playlist }) => {
    const dispatch = useDispatch();
@@ -88,7 +89,18 @@ export const PlaylistActions = ({ playlist }) => {
             </Button>
          )}
 
-         <Button size="icon" variant="outline" className="gap-2">
+         <Button
+            size="icon"
+            variant="outline"
+            className="gap-2"
+            onClick={() =>
+               dispatch(
+                  openShare({
+                     link: `${window.location.origin}/playlist/${playlist._id}`,
+                  })
+               )
+            }
+         >
             <Share2 className="size-4" />
          </Button>
 

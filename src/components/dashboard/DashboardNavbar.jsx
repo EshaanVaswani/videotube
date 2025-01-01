@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
    Bell,
    HelpCircle,
@@ -31,7 +31,7 @@ export const DashboardNavbar = () => {
 
    const [dropdownMenuOpen, setDropdownMenuOpen] = useState(false);
 
-   const { userId } = useParams();
+   const user = useSelector((state) => state.auth.user);
 
    return (
       <nav className="fixed top-0 left-0 right-0 z-50 border-b bg-background">
@@ -87,7 +87,7 @@ export const DashboardNavbar = () => {
                         <Upload className="size-5" />
                         Upload Video
                      </DropdownMenuItem>
-                     <Link to={`/dashboard/${userId}/content/?tab=posts`}>
+                     <Link to={`/channel/@${user.username}/?tab=community`}>
                         <DropdownMenuItem>
                            <SquarePen className="size-5" />
                            Create Post
@@ -96,7 +96,7 @@ export const DashboardNavbar = () => {
                      <DropdownMenuItem
                         onClick={() => {
                            setDropdownMenuOpen(false);
-                           dispatch(openPlaylistModal());
+                           dispatch(openPlaylistModal(""));
                         }}
                      >
                         <ListPlus className="size-5" />

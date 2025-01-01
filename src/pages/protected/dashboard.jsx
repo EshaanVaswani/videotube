@@ -12,7 +12,6 @@ import { open } from "@/store/reducers/videoModalReducer";
 
 const Dashboard = () => {
    const { data, isLoading } = useGetChannelStatsQuery();
-   console.log(data);
 
    const dispatch = useDispatch();
 

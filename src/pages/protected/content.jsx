@@ -1,13 +1,14 @@
-import { useGetChannelVideosQuery } from "@/store/api/dashboardApi";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { VideoGrid } from "@/components/video/VideoGrid";
-import { TweetSection } from "@/components/tweet/TweetSection";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
+import { Loader } from "@/components/Loader";
 import { TweetForm } from "@/components/forms/TweetForm";
+import { TweetSection } from "@/components/tweet/TweetSection";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DashboardVideosTable } from "@/components/dashboard/DashboardVideosTable";
 import { DashboardPlaylistsTable } from "@/components/dashboard/DashboardPlaylistsTable";
-import { Loader } from "@/components/Loader";
+
 import { useGetPlaylistsQuery } from "@/store/api/playlistApi";
+import { useGetChannelVideosQuery } from "@/store/api/dashboardApi";
 
 const Content = () => {
    const { userId } = useParams();
@@ -17,10 +18,6 @@ const Content = () => {
    const { data: playlists, isLoading: playlistsLoading } =
       useGetPlaylistsQuery(userId);
 
-   const params = useSearchParams();
-
-   const tab = params[0].get("tab");
-
    if (videosLoading || playlistsLoading) return <Loader />;
 
    if (!videos || !playlists) return null;
@@ -29,7 +26,7 @@ const Content = () => {
       <div>
          <h1 className="text-3xl font-bold p-6">Channel content</h1>
 
-         <Tabs defaultValue={tab || "videos"} className="px-6">
+         <Tabs defaultValue={"videos"} className="px-6">
             <TabsList className="w-full sm:w-auto">
                <TabsTrigger value="videos" className="flex-1 sm:flex-none">
                   Videos

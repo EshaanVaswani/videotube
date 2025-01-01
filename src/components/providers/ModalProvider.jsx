@@ -6,6 +6,7 @@ import { UpdateVideoModal } from "../modals/UpdateVideoModal";
 import { NewPlaylistModal } from "../modals/NewPlaylistModal";
 import { SaveToPlaylistModal } from "../modals/SaveToPlaylistModal";
 import { UpdatePlaylistModal } from "../modals/UpdatePlaylistModal";
+import { ShareModal } from "../modals/ShareModal";
 
 export const ModalProvider = () => {
    const [isMounted, setIsMounted] = useState(false);
@@ -26,6 +27,7 @@ export const ModalProvider = () => {
          <NewPlaylistModal />
          <SaveToPlaylistModal />
          <UpdatePlaylistModal />
+         <ShareModal />
       </>
    );
 };

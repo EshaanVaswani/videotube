@@ -19,6 +19,7 @@ import { confirmModalReducer } from "./reducers/confirmModalReducer";
 import { dashboardSidebarReducer } from "./reducers/dashboardSidebarReducer";
 import { playlistModalReducer } from "./reducers/playlistModalReducer";
 import { saveModalReducer } from "./reducers/saveModalReducer";
+import { shareModalReducer } from "./reducers/shareModalReducer";
 
 const store = configureStore({
    reducer: {
@@ -41,6 +42,7 @@ const store = configureStore({
       [dashboardSidebarReducer.name]: dashboardSidebarReducer.reducer,
       [playlistModalReducer.name]: playlistModalReducer.reducer,
       [saveModalReducer.name]: saveModalReducer.reducer,
+      [shareModalReducer.name]: shareModalReducer.reducer,
    },
    middleware: (mid) => [
       ...mid(),

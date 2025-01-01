@@ -16,7 +16,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import { open } from "@/store/reducers/saveModalReducer";
+import { open as openSave } from "@/store/reducers/saveModalReducer";
+import { open as openShare } from "@/store/reducers/shareModalReducer";
 import { useToggleVideoLikeMutation } from "@/store/api/likeApi";
 import { useToggleSubscriptionMutation } from "@/store/api/subscriptionApi";
 
@@ -159,7 +160,14 @@ export const VideoInfo = ({ video: vid }) => {
                   </Button>
                </div>
 
-               <Button variant="ghost" size="sm" className="rounded-full">
+               <Button
+                  variant="ghost"
+                  size="sm"
+                  className="rounded-full"
+                  onClick={() =>
+                     dispatch(openShare({ link: window.location.href }))
+                  }
+               >
                   <Share2 className="mr-1 h-4 w-4" />
                   <span className="hidden md:inline">Share</span>
                </Button>
@@ -173,7 +181,7 @@ export const VideoInfo = ({ video: vid }) => {
                   variant="ghost"
                   size="sm"
                   className="rounded-full"
-                  onClick={() => dispatch(open({ videoId: video._id }))}
+                  onClick={() => dispatch(openSave({ videoId: video._id }))}
                >
                   <Bookmark className="mr-1 h-4 w-4" />
                   <span className="hidden md:inline">Save</span>

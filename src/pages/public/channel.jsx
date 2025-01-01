@@ -1,15 +1,8 @@
 import { toast } from "sonner";
-import {
-   AlertTriangle,
-   Bell,
-   Flag,
-   MoreVertical,
-   Share2,
-   Video,
-} from "lucide-react";
+import { Bell, Flag, MoreVertical, Share2, Video } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 
 import {
    DropdownMenu,
@@ -29,6 +22,7 @@ import { ChannelSkeleton } from "@/components/skeleton/ChannelSkeleton";
 
 import { useGetVideosQuery } from "@/store/api/videoApi";
 import { open } from "@/store/reducers/videoModalReducer";
+import { open as openShare } from "@/store/reducers/shareModalReducer";
 import { useGetChannelProfileQuery } from "@/store/api/channelApi";
 import { useToggleSubscriptionMutation } from "@/store/api/subscriptionApi";
 import { PlaylistGrid } from "@/components/playlist/playlistGrid";
@@ -42,6 +36,11 @@ const Channel = () => {
    const dispatch = useDispatch();
 
    const [channel, setChannel] = useState(null);
+   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+   const params = useSearchParams();
+
+   const tab = params[0].get("tab");
 
    const { isLoggedIn, user } = useSelector((state) => state.auth);
 
@@ -157,14 +156,19 @@ const Channel = () => {
                      </Button>
                   </div>
                </div>
-               <DropdownMenu>
+               <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
                   <DropdownMenuTrigger asChild>
                      <Button variant="ghost" size="icon">
                         <MoreVertical />
                      </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                     <DropdownMenuItem>
+                     <DropdownMenuItem
+                        onClick={() => {
+                           setDropdownOpen(false);
+                           dispatch(openShare({ link: window.location.href }));
+                        }}
+                     >
                         <Share2 /> Share channel
                      </DropdownMenuItem>
                      <DropdownMenuItem>
@@ -174,7 +178,7 @@ const Channel = () => {
                </DropdownMenu>
             </div>
 
-            <Tabs defaultValue="home" className="mt-6">
+            <Tabs defaultValue={tab || "home"} className="mt-6">
                <TabsList className="w-full sm:w-auto">
                   <TabsTrigger value="home" className="flex-1 sm:flex-none">
                      Home

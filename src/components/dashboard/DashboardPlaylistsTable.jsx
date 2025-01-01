@@ -30,6 +30,7 @@ import {
    useToggleVisibilityMutation,
 } from "@/store/api/playlistApi";
 import { updateOpen } from "@/store/reducers/playlistModalReducer";
+import { open as openShare } from "@/store/reducers/shareModalReducer";
 
 export const DashboardPlaylistsTable = ({ playlists: p }) => {
    const dispatch = useDispatch();
@@ -185,7 +186,16 @@ export const DashboardPlaylistsTable = ({ playlists: p }) => {
                      >
                         <Trash2 /> Delete
                      </DropdownMenuItem>
-                     <DropdownMenuItem>
+                     <DropdownMenuItem
+                        onClick={() => {
+                           setDropdownOpen(false);
+                           dispatch(
+                              openShare({
+                                 link: `${window.location.origin}/playlist/${playlistId}`,
+                              })
+                           );
+                        }}
+                     >
                         <Share2 /> Share
                      </DropdownMenuItem>
                   </DropdownMenuContent>

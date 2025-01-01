@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Globe, Lock, Play, PlaySquare, Share2, Trash2 } from "lucide-react";
+import { Globe, Lock, Play, PlaySquare } from "lucide-react";
 import { PlaylistActions } from "./PlaylistActions";
 
 export const PlaylistInfo = ({ playlist }) => {
@@ -30,7 +30,7 @@ export const PlaylistInfo = ({ playlist }) => {
 
             <div className="flex items-center gap-2">
                <Link
-                  to={`/channel/${playlist.owner._id}`}
+                  to={`/channel/@${playlist.owner.username}`}
                   className="flex items-center gap-2 hover:text-primary"
                >
                   <img

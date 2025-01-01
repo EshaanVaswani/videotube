@@ -10,7 +10,7 @@ export const TweetSection = ({ channelId }) => {
 
    const user = useSelector((state) => state.auth.user);
 
-   if (!tweets) {
+   if (!tweets || tweets.length === 0) {
       return (
          <div>
             {isLoading ? (
@@ -36,10 +36,17 @@ export const TweetSection = ({ channelId }) => {
    );
 
    return (
-      <div className="space-y-4">
-         {sorted.map((tweet) => (
-            <TweetCard key={tweet._id} tweet={tweet} />
-         ))}
-      </div>
+      <>
+         {channelId === user?._id && (
+            <div>
+               <TweetForm />
+            </div>
+         )}
+         <div className="space-y-4">
+            {sorted.map((tweet) => (
+               <TweetCard key={tweet._id} tweet={tweet} />
+            ))}
+         </div>
+      </>
    );
 };

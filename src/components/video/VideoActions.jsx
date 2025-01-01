@@ -20,7 +20,8 @@ import {
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { open } from "@/store/reducers/saveModalReducer";
+import { open as saveModalOpen } from "@/store/reducers/saveModalReducer";
+import { open as shareModalOpen } from "@/store/reducers/shareModalReducer";
 import { useToggleVideoLikeMutation } from "@/store/api/likeApi";
 import { useRemoveVideoMutation } from "@/store/api/playlistApi";
 import { useRemoveVideoFromHistoryMutation } from "@/store/api/historyApi";
@@ -99,7 +100,7 @@ export const VideoActions = ({ video, variant = "default" }) => {
                   onClick={(e) => {
                      e.stopPropagation();
                      setDropdownOpen(false);
-                     dispatch(open({ videoId: video._id }));
+                     dispatch(saveModalOpen({ videoId: video._id }));
                   }}
                   className="gap-2"
                >
@@ -111,7 +112,18 @@ export const VideoActions = ({ video, variant = "default" }) => {
                <DropdownMenuItem className="gap-2">
                   <Download className="w-4 h-4" /> Download
                </DropdownMenuItem>
-               <DropdownMenuItem className="gap-2">
+               <DropdownMenuItem
+                  className="gap-2"
+                  onClick={(e) => {
+                     e.stopPropagation();
+                     setDropdownOpen(false);
+                     dispatch(
+                        shareModalOpen({
+                           link: `${window.location.origin}/watch/${video._id}`,
+                        })
+                     );
+                  }}
+               >
                   <Share2 className="w-4 h-4" /> Share
                </DropdownMenuItem>
                {variant === "history" && (
