@@ -1,6 +1,13 @@
 import { toast } from "sonner";
-import { Bell, Flag, MoreVertical, Share2 } from "lucide-react";
-import { useSelector } from "react-redux";
+import {
+   AlertTriangle,
+   Bell,
+   Flag,
+   MoreVertical,
+   Share2,
+   Video,
+} from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -21,6 +28,7 @@ import { VideoCarousel } from "@/components/video/VideoCarousel";
 import { ChannelSkeleton } from "@/components/skeleton/ChannelSkeleton";
 
 import { useGetVideosQuery } from "@/store/api/videoApi";
+import { open } from "@/store/reducers/videoModalReducer";
 import { useGetChannelProfileQuery } from "@/store/api/channelApi";
 import { useToggleSubscriptionMutation } from "@/store/api/subscriptionApi";
 import { PlaylistGrid } from "@/components/playlist/playlistGrid";
@@ -30,6 +38,8 @@ const Channel = () => {
    const { username: u } = useParams();
    const username = u.replace("@", "");
    const { data, isLoading } = useGetChannelProfileQuery(username);
+
+   const dispatch = useDispatch();
 
    const [channel, setChannel] = useState(null);
 
@@ -61,8 +71,6 @@ const Channel = () => {
          setChannel(data);
       }
    }, [data]);
-
-   console.log(channel);
 
    const handleSubscribe = async () => {
       if (!isLoggedIn) {
@@ -193,7 +201,23 @@ const Channel = () => {
                </TabsContent>
 
                <TabsContent value="videos" className="mt-6">
-                  <VideoGrid videos={videos} variant="channel" />
+                  {!videos?.length ? (
+                     <div className="flex flex-col items-center justify-center text-center gap-4 p-8">
+                        {user?._id !== channel._id ? (
+                           <p>This channel has no videos.</p>
+                        ) : (
+                           <>
+                              <p>You haven't uploaded any videos.</p>
+                              <Button onClick={() => dispatch(open(""))}>
+                                 <Video />
+                                 Upload
+                              </Button>
+                           </>
+                        )}
+                     </div>
+                  ) : (
+                     <VideoGrid videos={videos} variant="channel" />
+                  )}
                </TabsContent>
 
                <TabsContent value="playlists" className="mt-6">

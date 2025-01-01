@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 import { LogOut } from "lucide-react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import {
    DropdownMenu,
@@ -24,6 +25,8 @@ export const UserButton = () => {
 
    const dispatch = useDispatch();
 
+   const navigate = useNavigate();
+
    if (isLoading) {
       return <Loader />;
    }
@@ -41,6 +44,7 @@ export const UserButton = () => {
          if (res.success) {
             toast.success(res.message);
             dispatch(userNotExist());
+            navigate("/");
          }
       } catch (error) {
          toast.error("Failed to logout");

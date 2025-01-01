@@ -41,7 +41,7 @@ const Subscriptions = () => {
       return <Loader />;
    }
 
-   if (!channels) {
+   if (!channels || !channels.length) {
       return (
          <div className="flex flex-col items-center justify-center h-[calc(100vh-10rem)]">
             <AlertTriangle className="size-8" />

@@ -24,15 +24,6 @@ const LikedVideos = () => {
       return <Loader />;
    }
 
-   if (!data) {
-      return (
-         <div className="flex flex-col items-center justify-center h-[calc(100vh-8rem)]">
-            <AlertTriangle />
-            <p className="text-lg mt-4">No liked videos</p>
-         </div>
-      );
-   }
-
    return (
       <div className="px-4 md:px-6 py-4 max-w-screen-2xl mx-auto">
          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -40,8 +31,8 @@ const LikedVideos = () => {
             <div className="lg:col-span-1 space-y-4">
                <div className="relative aspect-video w-full">
                   <img
-                     src={data.likedVideos[0].thumbnail}
-                     alt={data.likedVideos[0].title}
+                     src={data?.likedVideos[0].thumbnail}
+                     alt={data?.likedVideos[0].title}
                      className="w-full h-full object-cover rounded-lg"
                   />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
@@ -60,7 +51,7 @@ const LikedVideos = () => {
                   <div>{user?.fullName}</div>
 
                   <span className="text-xs sm:text-sm text-muted-foreground">
-                     {data.videosCount} videos
+                     {data?.videosCount || 0} videos
                   </span>
 
                   <div className="flex flex-col gap-3">
@@ -86,9 +77,16 @@ const LikedVideos = () => {
 
             {/* RIGHT SECTION */}
             <div className="lg:col-span-2">
-               <ScrollArea className="h-[calc(100vh-8rem)] pr-4">
-                  <VideoList videos={data.likedVideos} variant="liked" />
-               </ScrollArea>
+               {!data || data.likedVideos.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-[calc(100vh-8rem)]">
+                     <AlertTriangle />
+                     <p className="text-lg mt-4">No liked videos</p>
+                  </div>
+               ) : (
+                  <ScrollArea className="h-[calc(100vh-8rem)] pr-4">
+                     <VideoList videos={data.likedVideos} variant="liked" />
+                  </ScrollArea>
+               )}
             </div>
          </div>
       </div>
