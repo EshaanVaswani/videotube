@@ -40,6 +40,38 @@ export const authApi = createApi({
          providesTags: ["Users"],
          transformResponse: (response) => response.data,
       }),
+      changePassword: builder.mutation({
+         query: (data) => ({
+            url: `/change-password`,
+            method: "POST",
+            body: data,
+         }),
+         invalidatesTags: ["Users"],
+      }),
+      updateCoverImage: builder.mutation({
+         query: (data) => ({
+            url: `/update-cover-img`,
+            method: "PATCH",
+            body: data,
+         }),
+         invalidatesTags: ["Users"],
+      }),
+      updateAvatar: builder.mutation({
+         query: (data) => ({
+            url: `/update-avatar`,
+            method: "PATCH",
+            body: data,
+         }),
+         invalidatesTags: ["Users"],
+      }),
+      updateAccountDetails: builder.mutation({
+         query: (data) => ({
+            url: `/update-account`,
+            method: "PATCH",
+            body: data,
+         }),
+         invalidatesTags: ["Users"],
+      }),
    }),
 });
 
@@ -48,4 +80,8 @@ export const {
    useLoginUserMutation,
    useLogoutUserMutation,
    useCurrentUserQuery,
+   useUpdateCoverImageMutation,
+   useUpdateAvatarMutation,
+   useUpdateAccountDetailsMutation,
+   useChangePasswordMutation,
 } = authApi;

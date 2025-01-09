@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
    ChartColumn,
    LayoutDashboard,
+   LockKeyhole,
    SquarePlay,
    WandSparkles,
 } from "lucide-react";
@@ -28,6 +29,7 @@ export const DashboardSidebar = () => {
       { icon: SquarePlay, label: "Content", href: "content" },
       { icon: ChartColumn, label: "Analytics", href: "analytics" },
       { icon: WandSparkles, label: "Customisation", href: "customisation" },
+      { icon: LockKeyhole, label: "Security", href: "security" },
    ];
 
    if (isLoading) {

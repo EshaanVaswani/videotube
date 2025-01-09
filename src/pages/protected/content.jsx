@@ -9,6 +9,8 @@ import { DashboardPlaylistsTable } from "@/components/dashboard/DashboardPlaylis
 
 import { useGetPlaylistsQuery } from "@/store/api/playlistApi";
 import { useGetChannelVideosQuery } from "@/store/api/dashboardApi";
+import { DashboardPostsTable } from "@/components/dashboard/DashboardPostsTable";
+import { useGetUserTweetsQuery } from "@/store/api/tweetApi";
 
 const Content = () => {
    const { userId } = useParams();
@@ -17,10 +19,14 @@ const Content = () => {
       useGetChannelVideosQuery();
    const { data: playlists, isLoading: playlistsLoading } =
       useGetPlaylistsQuery(userId);
+   const { data: posts, isLoading: postsLoading } =
+      useGetUserTweetsQuery(userId);
 
-   if (videosLoading || playlistsLoading) return <Loader />;
+   console.log(posts);
 
-   if (!videos || !playlists) return null;
+   if (videosLoading || playlistsLoading || postsLoading) return <Loader />;
+
+   if (!videos || !playlists || !posts) return null;
 
    return (
       <div>
@@ -44,8 +50,7 @@ const Content = () => {
             </TabsContent>
 
             <TabsContent value="posts" className="mt-6">
-               <TweetForm />
-               <TweetSection channelId={userId} />
+               <DashboardPostsTable posts={posts} />
             </TabsContent>
 
             <TabsContent value="playlists" className="mt-6">

@@ -87,7 +87,7 @@ export const DashboardNavbar = () => {
                         <Upload className="size-5" />
                         Upload Video
                      </DropdownMenuItem>
-                     <Link to={`/channel/@${user.username}/?tab=community`}>
+                     <Link to={`/channel/@${user?.username}/?tab=community`}>
                         <DropdownMenuItem>
                            <SquarePen className="size-5" />
                            Create Post

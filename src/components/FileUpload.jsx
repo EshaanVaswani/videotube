@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { X } from "lucide-react";
 import { Button } from "./ui/button";
@@ -9,10 +9,14 @@ export const FileUpload = ({
    placeholder,
    acceptedTypes = "*/*",
    icon = "/file-upload.svg",
-   containerClassName = "h-36 w-36", // Default size
+   containerClassName = "h-36 w-36",
 }) => {
    const [file, setFile] = useState(null);
    const [fileUrl, setFileUrl] = useState(mediaUrl);
+
+   useEffect(() => {
+      setFileUrl(mediaUrl);
+   }, [mediaUrl]);
 
    const onDrop = useCallback(
       (acceptedFiles) => {
@@ -29,10 +33,10 @@ export const FileUpload = ({
       e.stopPropagation();
       setFile(null);
       fieldChange([]);
-      if (fileUrl) {
+      if (fileUrl && !mediaUrl) {
          URL.revokeObjectURL(fileUrl);
-         setFileUrl(null);
       }
+      setFileUrl(null);
    };
 
    const { getRootProps, getInputProps } = useDropzone({
@@ -47,7 +51,7 @@ export const FileUpload = ({
       >
          <input {...getInputProps()} className="cursor-pointer" />
 
-         {fileUrl ? (
+         {fileUrl || mediaUrl ? (
             <div
                className={`relative border border-muted-foreground rounded-lg overflow-hidden w-full h-full`}
             >
@@ -62,13 +66,13 @@ export const FileUpload = ({
 
                {acceptedTypes.includes("image") ? (
                   <img
-                     src={fileUrl}
+                     src={fileUrl || mediaUrl}
                      alt="file"
                      className="w-full h-full object-cover"
                   />
                ) : acceptedTypes.includes("video") ? (
                   <video
-                     src={fileUrl}
+                     src={fileUrl || mediaUrl}
                      controls
                      className="w-full h-full object-cover"
                   />
