@@ -27,8 +27,29 @@ export const subscriptionApi = createApi({
          providesTags: ["Subscriptions"],
          transformResponse: (response) => response.data,
       }),
+      getChannelSubscribers: builder.query({
+         query: (channelId) => ({
+            url: `/c/${channelId}`,
+         }),
+         providesTags: ["Subscriptions"],
+         transformResponse: (response) => response.data,
+      }),
+      deleteSubscriber: builder.mutation({
+         query: (subscriberId) => ({
+            url: `/u/${subscriberId}`,
+            method: "DELETE",
+         }),
+         invalidatesTags: (result, error, videoId) => [
+            { type: "VideoStats", id: videoId },
+            "Subscriptions",
+         ],
+      }),
    }),
 });
 
-export const { useToggleSubscriptionMutation, useGetSubscribedChannelsQuery } =
-   subscriptionApi;
+export const {
+   useToggleSubscriptionMutation,
+   useGetSubscribedChannelsQuery,
+   useGetChannelSubscribersQuery,
+   useDeleteSubscriberMutation,
+} = subscriptionApi;

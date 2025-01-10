@@ -22,6 +22,7 @@ const Watch = () => {
 
    const { video, isLoading, error } = useGetVideoData(videoId);
 
+   const user = useSelector((state) => state.auth.user);
    const isTheaterMode = useSelector(
       (state) => state.videoPlayer.isTheaterMode
    );
@@ -30,13 +31,13 @@ const Watch = () => {
 
    useEffect(() => {
       const view = async () => {
-         if (videoId) {
+         if (videoId && video?.isPublished && video?.owner._id === user?._id) {
             await viewVideo(videoId).unwrap();
          }
       };
 
       view();
-   }, [videoId, viewVideo]);
+   }, [video, videoId, viewVideo]);
 
    if (isLoading) return <VideoSkeleton />;
 
@@ -54,6 +55,17 @@ const Watch = () => {
          <Error
             error={errorMessage}
             description="Something went wrong. Please try again."
+            buttonLabel={"Go to Home"}
+            buttonLink={"/"}
+         />
+      );
+   }
+
+   if (video.owner._id !== user._id && !video.isPublished) {
+      return (
+         <Error
+            error="Video is private"
+            description="This video is private. Try contacting the channel owner."
             buttonLabel={"Go to Home"}
             buttonLink={"/"}
          />

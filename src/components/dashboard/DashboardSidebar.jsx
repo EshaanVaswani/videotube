@@ -6,6 +6,7 @@ import {
    LayoutDashboard,
    LockKeyhole,
    SquarePlay,
+   Users,
    WandSparkles,
 } from "lucide-react";
 
@@ -30,6 +31,7 @@ export const DashboardSidebar = () => {
       { icon: ChartColumn, label: "Analytics", href: "analytics" },
       { icon: WandSparkles, label: "Customisation", href: "customisation" },
       { icon: LockKeyhole, label: "Security", href: "security" },
+      { icon: Users, label: "Subscribers", href: "subscribers" },
    ];
 
    if (isLoading) {

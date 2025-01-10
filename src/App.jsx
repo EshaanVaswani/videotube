@@ -24,6 +24,7 @@ import LikedVideos from "./pages/protected/liked-videos";
 import History from "./pages/protected/history";
 import Customisation from "./pages/protected/customisation";
 import Security from "./pages/protected/security";
+import Subscribers from "./pages/protected/subscribers";
 
 import { useCurrentUserQuery } from "./store/api/authApi";
 import { userExist, userNotExist } from "./store/reducers/authReducer";
@@ -125,6 +126,7 @@ function App() {
                <Route path="content" element={<Content />} />
                <Route path="customisation" element={<Customisation />} />
                <Route path="security" element={<Security />} />
+               <Route path="subscribers" element={<Subscribers />} />
             </Route>
          </Routes>
       </>
