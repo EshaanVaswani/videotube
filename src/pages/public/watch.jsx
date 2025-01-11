@@ -8,7 +8,7 @@ import { Navbar } from "@/components/navigation/Navbar";
 import { VideoInfo } from "@/components/video/VideoInfo";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
 import { VideoSkeleton } from "@/components/skeleton/VideoSkeleton";
-import CommentSection from "@/components/comment/CommentSection";
+import { CommentSection } from "@/components/comment/CommentSection";
 
 import {
    useGetVideoData,
@@ -31,17 +31,23 @@ const Watch = () => {
 
    useEffect(() => {
       const view = async () => {
-         if (videoId && video?.isPublished && video?.owner._id === user?._id) {
-            await viewVideo(videoId).unwrap();
+         if (videoId && video?.isPublished && video?.owner?._id !== user?._id) {
+            try {
+               await viewVideo(videoId).unwrap();
+            } catch (err) {
+               console.error("Failed to update view count:", err);
+            }
          }
       };
 
-      view();
-   }, [video, videoId, viewVideo]);
+      if (video) {
+         view();
+      }
+   }, [videoId, viewVideo, user?._id, video?.isPublished, video?.owner?._id]);
 
    if (isLoading) return <VideoSkeleton />;
 
-   if (error) {
+   if (error || !video) {
       let errorMessage = "Something went wrong";
       if (error?.data) {
          const match = error.data.match(/Error: (.+?)<\/pre>/);
@@ -61,7 +67,7 @@ const Watch = () => {
       );
    }
 
-   if (video.owner._id !== user._id && !video.isPublished) {
+   if (video.owner._id !== user?._id && !video.isPublished) {
       return (
          <Error
             error="Video is private"

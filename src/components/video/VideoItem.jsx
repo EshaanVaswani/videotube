@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 
 import { formatDuration } from "@/lib/utils";
@@ -15,6 +15,8 @@ export const VideoItem = ({ video: v, variant = "default" }) => {
            }
          : v;
 
+   const navigate = useNavigate();
+
    return (
       <div className="flex gap-2 rounded-lg p-2 group relative">
          <Link to={`/watch/${video._id}`} className="flex gap-2 flex-1">
@@ -30,7 +32,13 @@ export const VideoItem = ({ video: v, variant = "default" }) => {
             </div>
             <div className="flex-1">
                <h3 className="font-medium text-sm">{video.title}</h3>
-               <Link to={`/channel/@${video.owner.username}`}>
+               <div
+                  onClick={(e) => {
+                     e.preventDefault();
+                     e.stopPropagation();
+                     navigate(`/channel/${video.owner.username}`);
+                  }}
+               >
                   {variant !== "history" && (
                      <div className="flex items-center gap-2">
                         <Avatar className="size-5">
@@ -56,7 +64,7 @@ export const VideoItem = ({ video: v, variant = "default" }) => {
                         </span>
                      </>
                   )}
-               </Link>
+               </div>
                {variant !== "history" && (
                   <div className="flex items-center text-xs text-muted-foreground mt-1">
                      <span>{video.views} views</span>

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 
 import { cn, formatDuration } from "@/lib/utils";
@@ -6,6 +6,8 @@ import { cn, formatDuration } from "@/lib/utils";
 import { VideoActions } from "@/components/video/VideoActions";
 
 export const VideoCard = ({ video, variant = "default" }) => {
+   const navigate = useNavigate();
+
    return (
       <Link to={`/watch/${video._id}`}>
          <div className="flex flex-col gap-2">
@@ -26,23 +28,35 @@ export const VideoCard = ({ video, variant = "default" }) => {
             <div className="flex gap-3">
                {variant !== "channel" && (
                   <div className="flex-shrink-0">
-                     <Link to={`/channel/@${video.owner.username}`}>
+                     <div
+                        onClick={(e) => {
+                           e.preventDefault();
+                           e.stopPropagation();
+                           navigate(`/channel/@${video.owner.username}`);
+                        }}
+                     >
                         <img
                            src={video.owner.avatar}
                            alt={video.owner.username}
                            className="w-10 h-10 rounded-full"
                         />
-                     </Link>
+                     </div>
                   </div>
                )}
                <div className="flex-1">
                   <h3 className="font-medium line-clamp-2">{video.title}</h3>
                   {variant !== "channel" && (
-                     <Link to={`/channel/@${video.owner.username}`}>
+                     <div
+                        onClick={(e) => {
+                           e.preventDefault();
+                           e.stopPropagation();
+                           navigate(`/channel/@${video.owner.username}`);
+                        }}
+                     >
                         <p className="text-sm text-gray-600 mt-0.5 hover:text-white">
                            {video.owner.username}
                         </p>
-                     </Link>
+                     </div>
                   )}
                   <div className="text-sm text-gray-600">
                      {video.views} views •{" "}
