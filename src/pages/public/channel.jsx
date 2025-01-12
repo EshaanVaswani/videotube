@@ -18,6 +18,7 @@ import { Loader } from "@/components/Loader";
 import { VideoGrid } from "@/components/video/VideoGrid";
 import { TweetSection } from "@/components/tweet/TweetSection";
 import { VideoCarousel } from "@/components/video/VideoCarousel";
+import { PlaylistGrid } from "@/components/playlist/PlaylistGrid";
 import { ChannelSkeleton } from "@/components/skeleton/ChannelSkeleton";
 
 import { useGetVideosQuery } from "@/store/api/videoApi";
@@ -25,7 +26,6 @@ import { open } from "@/store/reducers/videoModalReducer";
 import { open as openShare } from "@/store/reducers/shareModalReducer";
 import { useGetChannelProfileQuery } from "@/store/api/channelApi";
 import { useToggleSubscriptionMutation } from "@/store/api/subscriptionApi";
-import { PlaylistGrid } from "@/components/playlist/playlistGrid";
 import { useGetPlaylistsQuery } from "@/store/api/playlistApi";
 
 const Channel = () => {
