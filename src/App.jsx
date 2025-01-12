@@ -1,34 +1,40 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Routes } from "react-router-dom";
 
 import { Error } from "./components/Error";
 import { Loader } from "./components/Loader";
 
-import AuthLayout from "./components/layouts/AuthLayout";
-import HomeLayout from "./components/layouts/HomeLayout";
-import DashboardLayout from "./components/layouts/DashboardLayout";
+const AuthLayout = lazy(() => import("./components/layouts/AuthLayout"));
+const HomeLayout = lazy(() => import("./components/layouts/HomeLayout"));
+const DashboardLayout = lazy(() =>
+   import("./components/layouts/DashboardLayout")
+);
 
-import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
+const Login = lazy(() => import("./pages/auth/Login"));
+const Register = lazy(() => import("./pages/auth/Register"));
 
-import Home from "./pages/public/home";
-import Explore from "./pages/public/explore";
-import Channel from "./pages/public/channel";
-import Watch from "./pages/public/watch";
-import Playlist from "./pages/public/playlist";
+const Home = lazy(() => import("./pages/public/home"));
+const Explore = lazy(() => import("./pages/public/explore"));
+const Channel = lazy(() => import("./pages/public/channel"));
+const Watch = lazy(() => import("./pages/public/watch"));
+const Playlist = lazy(() => import("./pages/public/playlist"));
 
-import Subscriptions from "./pages/protected/subscriptions";
-import LikedVideos from "./pages/protected/liked-videos";
-import WatchLater from "./pages/protected/watch-later";
-import History from "./pages/protected/history";
+const Subscriptions = lazy(() => import("./pages/protected/subscriptions"));
+const LikedVideos = lazy(() => import("./pages/protected/liked-videos"));
+const WatchLater = lazy(() => import("./pages/protected/watch-later"));
+const History = lazy(() => import("./pages/protected/history"));
 
-import Dashboard from "./pages/protected/dashboard/dashboard";
-import Content from "./pages/protected/dashboard/content";
-import Customisation from "./pages/protected/dashboard/customisation";
-import Security from "./pages/protected/dashboard/security";
-import Subscribers from "./pages/protected/dashboard/subscribers";
-import Analytics from "./pages/protected/dashboard/analytics";
+const Dashboard = lazy(() => import("./pages/protected/dashboard/dashboard"));
+const Content = lazy(() => import("./pages/protected/dashboard/content"));
+const Customisation = lazy(() =>
+   import("./pages/protected/dashboard/customisation")
+);
+const Security = lazy(() => import("./pages/protected/dashboard/security"));
+const Subscribers = lazy(() =>
+   import("./pages/protected/dashboard/subscribers")
+);
+const Analytics = lazy(() => import("./pages/protected/dashboard/analytics"));
 
 import { useCurrentUserQuery } from "./store/api/authApi";
 import { userExist, userNotExist } from "./store/reducers/authReducer";
@@ -80,7 +86,7 @@ function App() {
    }, [user, dispatch]);
 
    return (
-      <>
+      <Suspense fallback={<Loader />}>
          <Routes>
             <Route path="/auth" element={<AuthLayout />}>
                <Route path="login" element={<Login />} />
@@ -126,7 +132,7 @@ function App() {
                <Route path="subscribers" element={<Subscribers />} />
             </Route>
          </Routes>
-      </>
+      </Suspense>
    );
 }
 
