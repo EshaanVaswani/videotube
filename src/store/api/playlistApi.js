@@ -68,6 +68,26 @@ export const playlistApi = createApi({
          }),
          invalidatesTags: ["Playlist"],
       }),
+      saveVideoToWatchLater: builder.mutation({
+         query: (videoId) => ({
+            url: `/save/watch-later/${videoId}`,
+            method: "POST",
+         }),
+         invalidatesTags: ["Playlist"],
+      }),
+      removeVideoFromWatchLater: builder.mutation({
+         query: (videoId) => ({
+            url: `/remove/watch-later/${videoId}`,
+            method: "DELETE",
+         }),
+         invalidatesTags: ["Playlist"],
+      }),
+      getWatchLaterVideos: builder.query({
+         query: () => ({
+            url: "/get/watch-later",
+         }),
+         transformResponse: (response) => response.data,
+      }),
    }),
 });
 
@@ -80,4 +100,7 @@ export const {
    useToggleVisibilityMutation,
    useDeletePlaylistMutation,
    useUpdatePlaylistMutation,
+   useGetWatchLaterVideosQuery,
+   useSaveVideoToWatchLaterMutation,
+   useRemoveVideoFromWatchLaterMutation,
 } = playlistApi;

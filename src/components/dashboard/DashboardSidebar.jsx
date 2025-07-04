@@ -57,14 +57,14 @@ export const DashboardSidebar = () => {
          >
             <div className="p-2 overflow-y-auto h-full">
                <div className="flex flex-col items-center justify-center py-6">
-                  <Link to={`/channel/@${user.username}`}>
+                  <Link to={`/channel/@${user?.username}`}>
                      <Avatar className="w-28 h-auto aspect-square hover:opacity-50">
-                        <AvatarImage src={user.avatar} alt={user.username} />
+                        <AvatarImage src={user?.avatar} alt={user?.username} />
                      </Avatar>
                   </Link>
                   <h3 className="text-lg font-semibold mt-2">Your channel</h3>
                   <p className="text-sm text-muted-foreground">
-                     {user.fullName}
+                     {user?.fullName}
                   </p>
                </div>
                <div className="mb-8">
@@ -93,9 +93,9 @@ export const DashboardSidebar = () => {
          >
             <div className="py-2 flex flex-col items-center">
                <div className="py-4">
-                  <Link to={`/channel/@${user.username}`}>
+                  <Link to={`/channel/@${user?.username}`}>
                      <Avatar className="w-8 h-auto aspect-square hover:opacity-50">
-                        <AvatarImage src={user.avatar} alt={user.username} />
+                        <AvatarImage src={user?.avatar} alt={user?.username} />
                      </Avatar>
                   </Link>
                </div>

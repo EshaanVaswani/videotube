@@ -23,7 +23,11 @@ import { Button } from "@/components/ui/button";
 import { open as saveModalOpen } from "@/store/reducers/saveModalReducer";
 import { open as shareModalOpen } from "@/store/reducers/shareModalReducer";
 import { useToggleVideoLikeMutation } from "@/store/api/likeApi";
-import { useRemoveVideoMutation } from "@/store/api/playlistApi";
+import {
+   useRemoveVideoFromWatchLaterMutation,
+   useRemoveVideoMutation,
+   useSaveVideoToWatchLaterMutation,
+} from "@/store/api/playlistApi";
 import { useRemoveVideoFromHistoryMutation } from "@/store/api/historyApi";
 
 export const VideoActions = ({ video, variant = "default" }) => {
@@ -36,6 +40,8 @@ export const VideoActions = ({ video, variant = "default" }) => {
    const [toggle] = useToggleVideoLikeMutation();
    const [removeFromPlaylist] = useRemoveVideoMutation();
    const [removeFromHistory] = useRemoveVideoFromHistoryMutation();
+   const [saveToWatchLater] = useSaveVideoToWatchLaterMutation();
+   const [removeFromWatchLater] = useRemoveVideoFromWatchLaterMutation();
 
    const handleUnlike = async (e) => {
       e.stopPropagation();
@@ -77,6 +83,36 @@ export const VideoActions = ({ video, variant = "default" }) => {
       }
    };
 
+   const handleSaveToWatchLater = async (e) => {
+      e.stopPropagation();
+      try {
+         const res = await saveToWatchLater(video._id).unwrap();
+
+         if (res.success) toast.success("Video saved to Watch Later");
+      } catch (error) {
+         const errorMessage = error?.data
+            ? error.data.match(/Error: (.+?)<\/pre>/)?.[1] || error.data
+            : "Something went wrong";
+
+         toast.error(errorMessage);
+      }
+   };
+
+   const handleRemoveFromWatchLater = async (e) => {
+      e.stopPropagation();
+      try {
+         const res = await removeFromWatchLater(video._id).unwrap();
+
+         if (res.success) toast.success("Video removed from Watch Later");
+      } catch (error) {
+         const errorMessage = error?.data
+            ? error.data.match(/Error: (.+?)<\/pre>/)?.[1] || error.data
+            : "Something went wrong";
+
+         toast.error(errorMessage);
+      }
+   };
+
    return (
       <div className="flex items-center">
          {variant === "history" && (
@@ -106,7 +142,10 @@ export const VideoActions = ({ video, variant = "default" }) => {
                >
                   <Bookmark className="w-4 h-4" /> Save to playlist
                </DropdownMenuItem>
-               <DropdownMenuItem className="gap-2">
+               <DropdownMenuItem
+                  className="gap-2"
+                  onClick={handleSaveToWatchLater}
+               >
                   <Clock className="w-4 h-4" /> Save to Watch Later
                </DropdownMenuItem>
                <DropdownMenuItem className="gap-2">
@@ -156,6 +195,18 @@ export const VideoActions = ({ video, variant = "default" }) => {
                      <DropdownMenuItem onClick={handleUnlike} className="gap-2">
                         <Trash2 className="w-4 h-4" />
                         Remove from Liked Videos
+                     </DropdownMenuItem>
+                  </>
+               )}
+               {variant === "watch-later" && (
+                  <>
+                     <DropdownMenuSeparator />
+                     <DropdownMenuItem
+                        onClick={handleRemoveFromWatchLater}
+                        className="gap-2"
+                     >
+                        <Trash2 className="w-4 h-4" />
+                        Remove from Watch Later
                      </DropdownMenuItem>
                   </>
                )}

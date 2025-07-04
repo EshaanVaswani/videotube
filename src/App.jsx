@@ -49,7 +49,7 @@ const ProtectedRoute = ({ children }) => {
    useEffect(() => {
       if (data) {
          dispatch(userExist(data));
-      } else if (isError) {
+      } else if (isError && user === undefined) {
          dispatch(userNotExist());
       }
    }, [data, isError, dispatch]);

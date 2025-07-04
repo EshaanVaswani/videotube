@@ -14,6 +14,7 @@ import { VideoList } from "@/components/video/VideoList";
 
 import { useGetLikedVideosQuery } from "@/store/api/likeApi";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const LikedVideos = () => {
    const user = useSelector((state) => state.auth.user);
@@ -48,7 +49,19 @@ const LikedVideos = () => {
                      <Lock className="size-5 text-muted-foreground" />
                   </div>
 
-                  <div>{user?.fullName}</div>
+                  <div className="flex items-center gap-3">
+                     <Avatar className="rounded-full size-8 hover:opacity-75 transition">
+                        <AvatarImage
+                           className="rounded-md"
+                           alt={user?.username}
+                           src={user?.avatar}
+                        />
+                        <AvatarFallback className="rounded-full bg-sky-500 text-white">
+                           {user?.username.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                     </Avatar>
+                     <div>{user?.fullName}</div>
+                  </div>
 
                   <span className="text-xs sm:text-sm text-muted-foreground">
                      {data?.videosCount || 0} videos
