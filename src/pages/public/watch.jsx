@@ -33,7 +33,7 @@ const Watch = () => {
       const view = async () => {
          if (videoId && video?.isPublished && video?.owner?._id !== user?._id) {
             try {
-               await viewVideo(videoId).unwrap();
+               await viewVideo({ videoId }).unwrap();
             } catch (err) {
                console.error("Failed to update view count:", err);
             }
@@ -99,6 +99,7 @@ const Watch = () => {
                   >
                      <div className={`${isTheaterMode ? "" : "aspect-video"}`}>
                         <VideoPlayer
+                           videoId={videoId}
                            video={video.videoFile}
                            thumbnail={video.thumbnail}
                         />

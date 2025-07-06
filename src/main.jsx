@@ -11,8 +11,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { ModalProvider } from "@/components/providers/ModalProvider";
 
-console.log("rendering provider");
-
 createRoot(document.getElementById("root")).render(
    <StrictMode>
       <Provider store={store}>

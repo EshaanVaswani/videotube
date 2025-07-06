@@ -22,8 +22,6 @@ const Content = () => {
    const { data: posts, isLoading: postsLoading } =
       useGetUserTweetsQuery(userId);
 
-   console.log(posts);
-
    if (videosLoading || playlistsLoading || postsLoading) return <Loader />;
 
    if (!videos || !playlists || !posts) return null;

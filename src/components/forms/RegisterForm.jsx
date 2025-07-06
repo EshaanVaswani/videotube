@@ -151,7 +151,7 @@ const RegisterForm = () => {
                                     placeholder="Upload CoverImage"
                                     acceptedTypes="image/*"
                                     fieldChange={(files) => {
-                                       console.log(files);
+                                       files;
                                        form.setValue(
                                           "coverImage",
                                           Array.from(files)

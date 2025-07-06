@@ -21,7 +21,6 @@ const WatchLater = () => {
    const user = useSelector((state) => state.auth.user);
 
    const { data, isLoading } = useGetWatchLaterVideosQuery();
-   console.log(data);
 
    if (isLoading) {
       return <Loader />;
@@ -34,8 +33,8 @@ const WatchLater = () => {
             <div className="lg:col-span-1 space-y-4">
                <div className="relative aspect-video w-full">
                   <img
-                     src={data?.videos[0]?.thumbnail}
-                     alt={data?.videos[0]?.title}
+                     src={data?.videos?.[0]?.thumbnail}
+                     alt={data?.videos?.[0]?.title}
                      className="w-full h-full object-cover rounded-lg"
                   />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center">

@@ -47,11 +47,14 @@ export const videoApi = createApi({
          providesTags: (result, id) => [{ type: "VideoStats", id }],
       }),
       viewVideo: builder.mutation({
-         query: (videoId) => ({
+         query: ({ videoId, sessionId, watchTime }) => ({
             url: `/view/${videoId}`,
-            method: "PATCH",
+            method: "POST",
+            body: { sessionId, watchTime },
          }),
-         providesTags: (result, error, id) => [{ type: "VideoStats", id }],
+         providesTags: (result, error, { videoId }) => [
+            { type: "VideoStats", id: videoId },
+         ],
       }),
       togglePublishStatus: builder.mutation({
          query: (videoId) => ({
