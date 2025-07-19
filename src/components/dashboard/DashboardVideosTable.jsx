@@ -148,6 +148,84 @@ export const DashboardVideosTable = ({ videos: v }) => {
             new Date(row.getValue("dateUploaded")).toLocaleDateString(),
       },
       {
+         id: "tags",
+         header: "Tags",
+         accessorKey: "tags",
+         cell: ({ row }) => {
+            const tags = row.getValue("tags") || [];
+            const displayed = tags.slice(0, 3);
+            const remaining = tags.length - displayed.length;
+
+            return (
+               <div className="flex flex-wrap gap-1">
+                  {displayed.map((tag, i) => (
+                     <span
+                        key={i}
+                        className="text-xs bg-muted px-2 py-0.5 rounded-full"
+                     >
+                        {tag}
+                     </span>
+                  ))}
+                  {remaining > 0 && (
+                     <span
+                        className="text-xs bg-muted px-2 py-0.5 rounded-full cursor-pointer"
+                        title={tags.slice(3).join(", ")}
+                     >
+                        +{remaining} more
+                     </span>
+                  )}
+               </div>
+            );
+         },
+      },
+      {
+         id: "category",
+         header: "Category",
+         accessorKey: "category",
+         cell: ({ row }) => {
+            const categories = row.getValue("category") || [];
+            const displayed = categories.slice(0, 3);
+            const remaining = categories.length - displayed.length;
+
+            return (
+               <div className="flex flex-wrap gap-1">
+                  {displayed.map((cat, i) => (
+                     <span
+                        key={i}
+                        className="text-xs bg-muted px-2 py-0.5 rounded-full"
+                     >
+                        {cat}
+                     </span>
+                  ))}
+                  {remaining > 0 && (
+                     <span
+                        className="text-xs bg-muted px-2 py-0.5 rounded-full cursor-pointer"
+                        title={categories.slice(3).join(", ")}
+                     >
+                        +{remaining} more
+                     </span>
+                  )}
+               </div>
+            );
+         },
+      },
+      {
+         id: "totalWatchTime",
+         header: "Watch Time",
+         accessorKey: "totalWatchTime",
+         cell: ({ row }) => {
+            const seconds = row.getValue("totalWatchTime");
+            const hrs = Math.floor(seconds / 3600);
+            const mins = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+
+            const pad = (v) => String(v).padStart(2, "0");
+
+            return <span>{`${pad(hrs)}:${pad(mins)}:${pad(secs)}`}</span>;
+         },
+      },
+
+      {
          id: "actions",
          enableHiding: false,
          cell: ({ row }) => {

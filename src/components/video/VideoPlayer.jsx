@@ -73,7 +73,7 @@ export const VideoPlayer = ({ videoId, video, thumbnail }) => {
             watchTime: toSend,
          }).unwrap();
       } catch (err) {
-         // Fail silently
+         console.log("Error sending watch data:", err);
       }
 
       unsentWatchTimeRef.current = 0;

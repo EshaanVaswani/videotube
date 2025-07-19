@@ -9,6 +9,7 @@ import {
 import { PublishVideoForm } from "@/components/forms/PublishVideoForm";
 
 import { close } from "@/store/reducers/videoModalReducer";
+import MultiStepPublishForm from "../forms/publish-video/MultiStepForm";
 
 export const PublishVideoModal = () => {
    const isOpen = useSelector((state) => state.videoModal.isOpen);
@@ -21,7 +22,7 @@ export const PublishVideoModal = () => {
             <DialogHeader>
                <DialogTitle>Publish Video</DialogTitle>
             </DialogHeader>
-            <PublishVideoForm />
+            <MultiStepPublishForm />
          </DialogContent>
       </Dialog>
    );

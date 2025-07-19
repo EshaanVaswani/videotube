@@ -20,6 +20,7 @@ import { dashboardSidebarReducer } from "./reducers/dashboardSidebarReducer";
 import { playlistModalReducer } from "./reducers/playlistModalReducer";
 import { saveModalReducer } from "./reducers/saveModalReducer";
 import { shareModalReducer } from "./reducers/shareModalReducer";
+import { videoFormReducer } from "./reducers/videoFormReducer";
 
 const store = configureStore({
    reducer: {
@@ -43,20 +44,29 @@ const store = configureStore({
       [playlistModalReducer.name]: playlistModalReducer.reducer,
       [saveModalReducer.name]: saveModalReducer.reducer,
       [shareModalReducer.name]: shareModalReducer.reducer,
+      [videoFormReducer.name]: videoFormReducer.reducer,
    },
-   middleware: (mid) => [
-      ...mid(),
-      authApi.middleware,
-      videoApi.middleware,
-      likeApi.middleware,
-      subscriptionApi.middleware,
-      commentApi.middleware,
-      channelApi.middleware,
-      tweetApi.middleware,
-      dashboardApi.middleware,
-      playlistApi.middleware,
-      historyApi.middleware,
-   ],
+   middleware: (mid) =>
+      mid({
+         serializableCheck: {
+            ignoredPaths: ["videoForm.videoFile", "videoForm.thumbnail"],
+            ignoredActions: [
+               "videoForm/setField",
+               "videoForm/setMultipleFields",
+            ],
+         },
+      }).concat(
+         authApi.middleware,
+         videoApi.middleware,
+         likeApi.middleware,
+         subscriptionApi.middleware,
+         commentApi.middleware,
+         channelApi.middleware,
+         tweetApi.middleware,
+         dashboardApi.middleware,
+         playlistApi.middleware,
+         historyApi.middleware
+      ),
 });
 
 export default store;
