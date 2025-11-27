@@ -10,6 +10,7 @@ import { tweetApi } from "./api/tweetApi";
 import { dashboardApi } from "./api/dashboardApi";
 import { playlistApi } from "./api/playlistApi";
 import { historyApi } from "./api/historyApi";
+import { transcriptApi } from "./api/transcriptApi";
 
 import { authReducer } from "./reducers/authReducer";
 import { sidebarReducer } from "./reducers/sidebarReducer";
@@ -34,6 +35,7 @@ const store = configureStore({
       [dashboardApi.reducerPath]: dashboardApi.reducer,
       [playlistApi.reducerPath]: playlistApi.reducer,
       [historyApi.reducerPath]: historyApi.reducer,
+      [transcriptApi.reducerPath]: transcriptApi.reducer,
 
       [authReducer.name]: authReducer.reducer,
       [sidebarReducer.name]: sidebarReducer.reducer,
@@ -49,11 +51,7 @@ const store = configureStore({
    middleware: (mid) =>
       mid({
          serializableCheck: {
-            ignoredPaths: ["videoForm.videoFile", "videoForm.thumbnail"],
-            ignoredActions: [
-               "videoForm/setField",
-               "videoForm/setMultipleFields",
-            ],
+            ignoredActions: ["videoForm/setUploadedFiles"],
          },
       }).concat(
          authApi.middleware,
@@ -65,7 +63,8 @@ const store = configureStore({
          tweetApi.middleware,
          dashboardApi.middleware,
          playlistApi.middleware,
-         historyApi.middleware
+         historyApi.middleware,
+         transcriptApi.middleware
       ),
 });
 

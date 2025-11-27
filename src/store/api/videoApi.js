@@ -10,6 +10,14 @@ export const videoApi = createApi({
    }),
    tagTypes: ["Videos", "VideoStats", "Video"],
    endpoints: (builder) => ({
+      uploadFiles: builder.mutation({
+         query: (data) => ({
+            url: "/upload-files",
+            method: "POST",
+            body: data,
+         }),
+         transformResponse: (response) => response.data,
+      }),
       publishVideo: builder.mutation({
          query: (data) => ({
             url: "/",
@@ -98,6 +106,7 @@ export const useGetVideoData = (videoId) => {
 };
 
 export const {
+   useUploadFilesMutation,
    usePublishVideoMutation,
    useGetVideosQuery,
    useGetVideoByIdQuery,

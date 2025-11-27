@@ -1,59 +1,109 @@
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useDispatch, useSelector } from "react-redux";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+   Form,
+   FormControl,
+   FormField,
+   FormItem,
+   FormLabel,
+   FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-import { setMultipleFields } from "@/store/reducers/videoFormReducer";
+import { detailsSchema } from "@/schemas/video.schema";
+import {
+   setDetails,
+   nextStep,
+   prevStep,
+} from "@/store/reducers/videoFormReducer";
 
-const schema = z.object({
-   title: z.string().min(1, "Title is required"),
-   description: z.string().min(1, "Description is required"),
-});
-
-export const DetailsStep = ({ onNext, onBack }) => {
+export function DetailsStep() {
    const dispatch = useDispatch();
-   const { title, description } = useSelector((state) => state.videoForm);
+   const { formData } = useSelector((state) => state.videoForm);
 
-   const {
-      register,
-      handleSubmit,
-      formState: { errors },
-   } = useForm({
-      resolver: zodResolver(schema),
-      defaultValues: { title, description },
+   const form = useForm({
+      resolver: zodResolver(detailsSchema),
+      defaultValues: {
+         title: formData.title,
+         description: formData.description,
+      },
    });
 
    const onSubmit = (data) => {
-      dispatch(setMultipleFields(data));
-      onNext();
+      dispatch(setDetails(data));
+      dispatch(nextStep());
    };
 
    return (
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-         <div>
-            <Input {...register("title")} placeholder="Title" />
-            {errors.title && (
-               <p className="text-red-500 text-sm">{errors.title.message}</p>
-            )}
-         </div>
-         <div>
-            <Textarea {...register("description")} placeholder="Description" />
-            {errors.description && (
-               <p className="text-red-500 text-sm">
-                  {errors.description.message}
+      <Form {...form}>
+         <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6 flex flex-col h-full"
+         >
+            <div>
+               <h2 className="text-2xl font-bold">Video Details</h2>
+               <p className="text-muted-foreground mt-1">
+                  Add a title and description for your video
                </p>
-            )}
-         </div>
-         <div className="flex justify-between mt-4">
-            <Button variant="outline" onClick={onBack}>
-               Back
-            </Button>
-            <Button type="submit">Next</Button>
-         </div>
-      </form>
+            </div>
+
+            <div className="space-y-4 flex-grow">
+               <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                     <FormItem>
+                        <FormLabel>Title *</FormLabel>
+                        <FormControl>
+                           <Input placeholder="Enter video title" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                     </FormItem>
+                  )}
+               />
+
+               <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                     <FormItem>
+                        <FormLabel>Description *</FormLabel>
+                        <FormControl>
+                           <Textarea
+                              placeholder="Enter video description"
+                              className="min-h-[150px] resize-none"
+                              {...field}
+                           />
+                        </FormControl>
+                        <FormMessage />
+                     </FormItem>
+                  )}
+               />
+            </div>
+
+            <div className="flex justify-between">
+               <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => dispatch(prevStep())}
+               >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back
+               </Button>
+               <Button type="submit">
+                  Next
+                  <ArrowRight className="ml-2 h-4 w-4" />
+               </Button>
+            </div>
+         </form>
+      </Form>
    );
-};
+}
+
+export default DetailsStep;

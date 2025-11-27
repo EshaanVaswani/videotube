@@ -1,75 +1,243 @@
-import { z } from "zod";
+import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { Upload, Video, Image, Loader2, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { FileUpload } from "@/components/FileUpload";
-import { setField } from "@/store/reducers/videoFormReducer";
+import {
+   Form,
+   FormControl,
+   FormField,
+   FormItem,
+   FormLabel,
+   FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
-const uploadSchema = z.object({
-   videoFile: z
-      .instanceof(File, { message: "Video is required" })
-      .refine((file) => file.size > 0, { message: "Invalid video file" }),
-   thumbnail: z
-      .instanceof(File, { message: "Thumbnail is required" })
-      .refine((file) => file.size > 0, { message: "Invalid thumbnail file" }),
-});
+import { uploadSchema } from "@/schemas/video.schema";
+import { setUploadedFiles, nextStep } from "@/store/reducers/videoFormReducer";
+import { useUploadFilesMutation } from "@/store/api/videoApi";
+import { useTranscriptGenerator } from "@/hooks/useTranscriptGenerator";
 
-export function UploadStep({ onNext }) {
+export function UploadStep() {
    const dispatch = useDispatch();
-   const { videoFile, thumbnail } = useSelector((state) => state.videoForm);
+   const [uploadFiles, { isLoading }] = useUploadFilesMutation();
+   const { generateTranscript } = useTranscriptGenerator();
 
-   const {
-      handleSubmit,
-      setValue,
-      formState: { errors },
-   } = useForm({
-      resolver: zodResolver(uploadSchema),
-      defaultValues: { videoFile, thumbnail },
+   const [previews, setPreviews] = useState({
+      video: null,
+      thumbnail: null,
    });
 
-   const onSubmit = () => {
-      onNext();
+   const form = useForm({
+      resolver: zodResolver(uploadSchema),
+      defaultValues: {
+         videoFile: undefined,
+         thumbnail: undefined,
+      },
+   });
+
+   const handleFileChange = useCallback((field, file, type) => {
+      field.onChange(file);
+      if (file) {
+         const url = URL.createObjectURL(file);
+         setPreviews((prev) => ({ ...prev, [type]: url }));
+      }
+   }, []);
+
+   const clearFile = useCallback((field, type) => {
+      field.onChange(undefined);
+      setPreviews((prev) => {
+         if (prev[type]) URL.revokeObjectURL(prev[type]);
+         return { ...prev, [type]: null };
+      });
+   }, []);
+
+   const onSubmit = async (data) => {
+      try {
+         const formData = new FormData();
+         formData.append("videoFile", data.videoFile);
+         formData.append("thumbnail", data.thumbnail);
+
+         const response = await uploadFiles(formData).unwrap();
+
+         const { videoUrl, thumbnailUrl, duration } = response;
+
+         if (!videoUrl || !thumbnailUrl) {
+            throw new Error("Invalid response: missing video or thumbnail URL");
+         }
+
+         dispatch(setUploadedFiles({ videoUrl, thumbnailUrl, duration }));
+
+         generateTranscript(videoUrl);
+
+         dispatch(nextStep());
+      } catch (error) {
+         console.error("Upload error:", error);
+         form.setError("root", {
+            message: error?.data?.message || error?.message || "Upload failed",
+         });
+      }
    };
 
    return (
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-         <h2 className="text-lg font-semibold">Upload Video & Thumbnail</h2>
+      <Form {...form}>
+         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div>
+               <h2 className="text-xl font-semibold">
+                  Upload Video & Thumbnail
+               </h2>
+               <p className="text-muted-foreground text-sm mt-1">
+                  Select your video file and a thumbnail image
+               </p>
+            </div>
 
-         <FileUpload
-            name="videoFile"
-            acceptedTypes="video/*"
-            placeholder="Upload Video"
-            containerClassName="w-full h-48"
-            fieldChange={(files) => {
-               const file = files?.[0];
-               setValue("videoFile", file, { shouldValidate: true });
-               dispatch(setField({ key: "videoFile", value: file }));
-            }}
-         />
-         {errors.videoFile && (
-            <p className="text-sm text-red-500">{errors.videoFile.message}</p>
-         )}
+            {/* Video Upload */}
+            <FormField
+               control={form.control}
+               name="videoFile"
+               render={({ field }) => (
+                  <FormItem>
+                     <FormLabel>Video File *</FormLabel>
+                     <FormControl>
+                        <div className="border-2 border-dashed rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
+                           <Input
+                              type="file"
+                              accept="video/*"
+                              className="hidden"
+                              id="video-upload"
+                              onChange={(e) =>
+                                 handleFileChange(
+                                    field,
+                                    e.target.files?.[0],
+                                    "video"
+                                 )
+                              }
+                           />
+                           {previews.video ? (
+                              <div className="relative">
+                                 <video
+                                    src={previews.video}
+                                    className="max-h-40 mx-auto rounded"
+                                    controls={false}
+                                 />
+                                 <Button
+                                    type="button"
+                                    variant="destructive"
+                                    size="icon"
+                                    className="absolute top-2 right-2 h-6 w-6"
+                                    onClick={() => clearFile(field, "video")}
+                                 >
+                                    <X className="h-4 w-4" />
+                                 </Button>
+                                 <p className="text-sm text-muted-foreground mt-2">
+                                    {field.value?.name}
+                                 </p>
+                              </div>
+                           ) : (
+                              <label
+                                 htmlFor="video-upload"
+                                 className="cursor-pointer flex flex-col items-center"
+                              >
+                                 <Video className="h-10 w-10 text-muted-foreground mb-2" />
+                                 <span className="text-muted-foreground">
+                                    Click to select video
+                                 </span>
+                              </label>
+                           )}
+                        </div>
+                     </FormControl>
+                     <FormMessage />
+                  </FormItem>
+               )}
+            />
 
-         <FileUpload
-            name="thumbnail"
-            acceptedTypes="image/*"
-            placeholder="Upload Thumbnail"
-            containerClassName="w-full h-48"
-            fieldChange={(files) => {
-               const file = files?.[0];
-               setValue("thumbnail", file, { shouldValidate: true });
-               dispatch(setField({ key: "thumbnail", value: file }));
-            }}
-         />
-         {errors.thumbnail && (
-            <p className="text-sm text-red-500">{errors.thumbnail.message}</p>
-         )}
+            {/* Thumbnail Upload */}
+            <FormField
+               control={form.control}
+               name="thumbnail"
+               render={({ field }) => (
+                  <FormItem>
+                     <FormLabel>Thumbnail *</FormLabel>
+                     <FormControl>
+                        <div className="border-2 border-dashed rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
+                           <Input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              id="thumbnail-upload"
+                              onChange={(e) =>
+                                 handleFileChange(
+                                    field,
+                                    e.target.files?.[0],
+                                    "thumbnail"
+                                 )
+                              }
+                           />
+                           {previews.thumbnail ? (
+                              <div className="relative">
+                                 <img
+                                    src={previews.thumbnail}
+                                    alt="Thumbnail preview"
+                                    className="max-h-40 mx-auto rounded object-cover"
+                                 />
+                                 <Button
+                                    type="button"
+                                    variant="destructive"
+                                    size="icon"
+                                    className="absolute top-2 right-2 h-6 w-6"
+                                    onClick={() =>
+                                       clearFile(field, "thumbnail")
+                                    }
+                                 >
+                                    <X className="h-4 w-4" />
+                                 </Button>
+                                 <p className="text-sm text-muted-foreground mt-2">
+                                    {field.value?.name}
+                                 </p>
+                              </div>
+                           ) : (
+                              <label
+                                 htmlFor="thumbnail-upload"
+                                 className="cursor-pointer flex flex-col items-center"
+                              >
+                                 <Image className="h-10 w-10 text-muted-foreground mb-2" />
+                                 <span className="text-muted-foreground">
+                                    Click to select thumbnail
+                                 </span>
+                              </label>
+                           )}
+                        </div>
+                     </FormControl>
+                     <FormMessage />
+                  </FormItem>
+               )}
+            />
 
-         <Button type="submit" className="w-full">
-            Next
-         </Button>
-      </form>
+            {/* Root Error */}
+            {form.formState.errors.root && (
+               <div className="text-destructive text-sm bg-destructive/10 p-3 rounded-lg">
+                  {form.formState.errors.root.message}
+               </div>
+            )}
+
+            <Button type="submit" className="w-full" disabled={isLoading}>
+               {isLoading ? (
+                  <>
+                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                     Uploading...
+                  </>
+               ) : (
+                  <>
+                     <Upload className="mr-2 h-4 w-4" />
+                     Upload & Continue
+                  </>
+               )}
+            </Button>
+         </form>
+      </Form>
    );
 }
+
+export default UploadStep;

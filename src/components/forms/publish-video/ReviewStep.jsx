@@ -1,112 +1,188 @@
-import * as z from "zod";
 import { toast } from "sonner";
-import { useForm } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {
+   ArrowLeft,
+   Loader2,
+   CheckCircle,
+   FileText,
+   Tag,
+   Folder,
+   Clock,
+} from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 import { close } from "@/store/reducers/videoModalReducer";
-import { resetForm } from "@/store/reducers/videoFormReducer";
+import { resetVideoUpload, prevStep } from "@/store/reducers/videoFormReducer";
 import { usePublishVideoMutation } from "@/store/api/videoApi";
 
-const schema = z.object({
-   title: z.string().min(1, "Title is required"),
-   description: z.string().min(1, "Description is required"),
-   transcript: z.string().min(1, "Transcript is required"),
-   tags: z.array(z.string().min(1)).min(1, "At least one tag is required"),
-   category: z.string().min(1, "Category is required"),
-   videoFile: z.any().refine((file) => file instanceof File, {
-      message: "Video file is required",
-   }),
-   thumbnail: z.any().refine((file) => file instanceof File, {
-      message: "Thumbnail is required",
-   }),
-});
-
-export const ReviewStep = ({ onBack }) => {
+export const ReviewStep = () => {
    const dispatch = useDispatch();
-   const data = useSelector((state) => state.videoForm);
    const [publish, { isLoading }] = usePublishVideoMutation();
 
-   const {
-      handleSubmit,
-      setError,
-      formState: { errors },
-   } = useForm({
-      resolver: zodResolver(schema),
-      defaultValues: data,
-   });
+   const { uploadedFiles, formData, transcript } = useSelector(
+      (state) => state.videoForm
+   );
+
+   const { videoUrl, thumbnailUrl, duration } = uploadedFiles;
+   const { title, description, tags, category } = formData;
+
+   const formatDuration = (seconds) => {
+      if (!seconds) return "Unknown";
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs.toString().padStart(2, "0")}`;
+   };
 
    const handlePublish = async () => {
-      try {
-         schema.parse(data);
-      } catch (e) {
-         toast.error("Validation failed. Please check all fields.");
+      if (!videoUrl || !thumbnailUrl) {
+         toast.error(
+            "Video and thumbnail are required. Please go back to upload."
+         );
          return;
       }
 
-      const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("description", data.description);
-      formData.append("transcript", data.transcript);
-      data.tags.forEach((tag) => formData.append("tags[]", tag));
-      formData.append("category", data.category);
-      if (data.videoFile) formData.append("videoFile", data.videoFile);
-      if (data.thumbnail) formData.append("thumbnail", data.thumbnail);
+      if (!title || !description) {
+         toast.error("Title and description are required.");
+         return;
+      }
 
       try {
-         const res = await publish(formData).unwrap();
+         const res = await publish({
+            title,
+            description,
+            transcript: transcript.text || "",
+            tags: tags || [],
+            category: category || "",
+            thumbnailUrl,
+            videoUrl,
+            duration: duration || 0,
+         }).unwrap();
+
          if (res.success) {
-            toast.success(res.message);
-            dispatch(resetForm());
+            toast.success(res.message || "Video published successfully!");
+            dispatch(resetVideoUpload());
             dispatch(close());
          }
       } catch (err) {
-         toast.error("Publishing failed");
+         console.error("Publish error:", err);
+         toast.error(err?.data?.message || "Failed to publish video");
       }
    };
 
    return (
-      <form onSubmit={handleSubmit(handlePublish)} className="space-y-4">
-         <h2 className="text-lg font-semibold">Review & Publish</h2>
-
-         <div className="space-y-2 text-sm">
-            <p>
-               <strong>Title:</strong> {data.title}
-            </p>
-            <p>
-               <strong>Description:</strong> {data.description}
-            </p>
-            <p>
-               <strong>Transcript:</strong> {data.transcript?.slice(0, 200)}...
-            </p>
-            <p>
-               <strong>Tags:</strong> {data.tags.join(", ")}
-            </p>
-            <p>
-               <strong>Category:</strong> {data.category}
+      <div className="space-y-6 h-full flex flex-col">
+         <div>
+            <h2 className="text-xl font-semibold">Review & Publish</h2>
+            <p className="text-muted-foreground text-sm mt-1">
+               Review your video details before publishing
             </p>
          </div>
 
-         <div className="space-y-1 text-sm text-red-500">
-            {errors.title && <p>{errors.title.message}</p>}
-            {errors.description && <p>{errors.description.message}</p>}
-            {errors.transcript && <p>{errors.transcript.message}</p>}
-            {errors.tags && <p>{errors.tags.message}</p>}
-            {errors.category && <p>{errors.category.message}</p>}
-            {errors.videoFile && <p>{errors.videoFile.message}</p>}
-            {errors.thumbnail && <p>{errors.thumbnail.message}</p>}
+         <div className="space-y-4 flex-grow overflow-auto">
+            {thumbnailUrl && (
+               <div className="rounded-lg overflow-hidden border">
+                  <img
+                     src={thumbnailUrl}
+                     alt="Thumbnail"
+                     className="w-full h-40 object-cover"
+                  />
+               </div>
+            )}
+
+            {/* Title & Description */}
+            <div className="space-y-2">
+               <h3 className="font-semibold text-lg">{title || "No title"}</h3>
+               <p className="text-muted-foreground text-sm line-clamp-3">
+                  {description || "No description"}
+               </p>
+            </div>
+
+            {/* Duration */}
+            {duration && (
+               <div className="flex items-center gap-2 text-sm">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  <span className="font-medium">Duration:</span>
+                  <span className="text-muted-foreground">
+                     {formatDuration(duration)}
+                  </span>
+               </div>
+            )}
+
+            {/* Transcript */}
+            <div className="flex items-start gap-2 text-sm">
+               <FileText className="h-4 w-4 text-muted-foreground mt-0.5" />
+               <div>
+                  <span className="font-medium">Transcript:</span>
+                  <span className="text-muted-foreground ml-2">
+                     {transcript.text
+                        ? `${transcript.text.slice(0, 100)}${
+                             transcript.text.length > 100 ? "..." : ""
+                          }`
+                        : "No transcript"}
+                  </span>
+               </div>
+            </div>
+
+            {/* Category */}
+            {category && (
+               <div className="flex items-center gap-2 text-sm">
+                  <Folder className="h-4 w-4 text-muted-foreground" />
+                  <span className="font-medium">Category:</span>
+                  <span className="text-muted-foreground">{category}</span>
+               </div>
+            )}
+
+            {/* Tags */}
+            {tags && tags.length > 0 && (
+               <div className="flex items-start gap-2 text-sm">
+                  <Tag className="h-4 w-4 text-muted-foreground mt-1" />
+                  <div className="flex flex-wrap gap-1">
+                     {tags.map((tag) => (
+                        <Badge key={tag} variant="secondary">
+                           {tag}
+                        </Badge>
+                     ))}
+                  </div>
+               </div>
+            )}
+
+            {(!videoUrl || !thumbnailUrl) && (
+               <div className="text-red-500 text-sm bg-red-50 dark:bg-red-950 p-3 rounded-lg">
+                  ⚠️ Video or thumbnail not uploaded. Please go back to upload.
+               </div>
+            )}
          </div>
 
          <div className="flex justify-between">
-            <Button variant="outline" onClick={onBack}>
+            <Button
+               variant="outline"
+               onClick={() => dispatch(prevStep())}
+               disabled={isLoading}
+            >
+               <ArrowLeft className="mr-2 h-4 w-4" />
                Back
             </Button>
-            <Button type="submit" disabled={isLoading}>
-               {isLoading ? "Publishing..." : "Publish"}
+            <Button
+               onClick={handlePublish}
+               disabled={isLoading || !videoUrl || !thumbnailUrl}
+            >
+               {isLoading ? (
+                  <>
+                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                     Publishing...
+                  </>
+               ) : (
+                  <>
+                     <CheckCircle className="mr-2 h-4 w-4" />
+                     Publish Video
+                  </>
+               )}
             </Button>
          </div>
-      </form>
+      </div>
    );
 };
+
+export default ReviewStep;

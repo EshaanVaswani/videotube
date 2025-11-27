@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useSelector } from "react-redux";
 
 import { Card } from "@/components/ui/card";
@@ -14,35 +13,20 @@ import { ReviewStep } from "./ReviewStep";
 const TOTAL_STEPS = 5;
 
 export default function MultiStepPublishForm() {
-   const [step, setStep] = useState(0);
+   const { currentStep } = useSelector((state) => state.videoForm);
 
    const renderStep = () => {
-      switch (step) {
+      switch (currentStep) {
          case 0:
-            return <UploadStep onNext={() => setStep(1)} />;
+            return <UploadStep />;
          case 1:
-            return (
-               <DetailsStep
-                  onNext={() => setStep(2)}
-                  onBack={() => setStep(0)}
-               />
-            );
+            return <DetailsStep />;
          case 2:
-            return (
-               <TranscriptStep
-                  onNext={() => setStep(3)}
-                  onBack={() => setStep(1)}
-               />
-            );
+            return <TranscriptStep />;
          case 3:
-            return (
-               <TagsCategoriesStep
-                  onNext={() => setStep(4)}
-                  onBack={() => setStep(2)}
-               />
-            );
+            return <TagsCategoriesStep />;
          case 4:
-            return <ReviewStep onBack={() => setStep(3)} />;
+            return <ReviewStep />;
          default:
             return null;
       }
@@ -50,10 +34,10 @@ export default function MultiStepPublishForm() {
 
    return (
       <Card className="w-full h-[600px] mx-auto p-6 space-y-6 flex flex-col">
-         <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+         <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
             <div
-               className="h-full bg-blue-950 transition-all duration-300"
-               style={{ width: `${(step / (TOTAL_STEPS - 1)) * 100}%` }}
+               className="h-full bg-primary transition-all duration-300"
+               style={{ width: `${(currentStep / (TOTAL_STEPS - 1)) * 100}%` }}
             />
          </div>
          <div className="flex-grow overflow-auto">
